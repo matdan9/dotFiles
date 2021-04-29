@@ -1,5 +1,4 @@
 " line numbers
-set relativenumber
 set nu rnu
 
 " tabs/spaces size
@@ -19,9 +18,3 @@ colo desert
 " slate -> main blue + small green accent
 " zellner -> red + purple + dark
 " desert -> closest to jetbrain darkula
-
-
-
-"set background=dark
-"let g:solarized_termcolors=256
-"let g:solarized_termtrans=1
