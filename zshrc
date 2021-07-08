@@ -16,4 +16,3 @@ export VISUAL="vim"
 
 alias rob="mpv https://www.twitch.tv/rwxrob"
 alias cloud="cd $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs"
-alias soundFix="sudo kill -15 $(pgrep coreaudio)"
