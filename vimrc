@@ -5,6 +5,7 @@ set nu rnu
 set ts=4 sw=4
 set autoindent
 set spell
+set backspace=indent,eol,start
 
 syntax on
 set t_Co=256
