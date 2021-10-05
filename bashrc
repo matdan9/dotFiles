@@ -1,27 +1,23 @@
 export CLICOLOR=1
 
 # Tired of looking up colors
-export RESET="\e[0m"
-export DEF="\e[39m"
-export BLACK="\e[30m"
-export RED="\e[31m"
-export GREEN="\e[32m"
-export YELLOW="\e[33m"
-export BLUE="\e[34m"
-export MAGENTA="\e[35m"
-export CYAN="\e[36m"
-export LIGTH="\e[37m"
-export DARK_GREY="\e[90m"
-export LIGHT_RED="\e[91m"
-export LIGTH_GREEN="\e[92m"
-export LIGTH_YELLOW="\e[93m"
-export BOLD="\e[1m"
+export RESET="\[\e[0m\]"
+export DEF="\[\e[39m\]"
+export BLACK="\[\e[30m\]"
+export RED="\[\e[31m\]"
+export GREEN="\[\e[32m\]"
+export YELLOW="\[\e[33m\]"
+export BLUE="\[\e[34m\]"
+export MAGENTA="\[\e[35m\]"
+export CYAN="\[\e[36m\]"
+export LIGTH="\[\e[37m\]"
+export DARK_GREY="\[\e[90m\]"
+export LIGHT_RED="\[\e[91m\]"
+export LIGTH_GREEN="\[\e[92m\]"
+export LIGTH_YELLOW="\[\e[93m\]"
+export BOLD="\[\e[1m\]"
 
 export DARK=$DARK_GREY
-
-if [ $(tput colors) = "256" ]; then
-	export DARK="\e[38;5;240m"
-fi
 
 __ps1() {
 	local E="$?"
@@ -45,6 +41,7 @@ PROMPT_COMMAND="__ps1"
 export lamp="10.10.4.36 - LAMP (PHP 7.4)"
 export TERM=xterm-256color
 export VISUAL="vim"
+export EDITOR="vim"
 
 alias rob="mpv https://www.twitch.tv/rwxrob"
 alias cloud="cd $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs"
