@@ -35,7 +35,7 @@ set laststatus=2
 
 "Left align
 set statusline=
-"execute "set statusline +=%1*\\ " . gitBranch
+execute "set statusline +=%1*\\ " . gitBranch
 set statusline +=\ %3*\ %y\  			" file type
 set statusline +=%0*\ %f				" file name
 									

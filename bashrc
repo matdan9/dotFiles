@@ -46,7 +46,6 @@ export EDITOR="vim"
 alias rob="mpv https://www.twitch.tv/rwxrob"
 alias cloud="cd $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs"
 alias gitlen="git ls-files | xargs wc -l"
-alias ls="ls --color -h"
 
 if [ "$(uname)" = "Darwin" ]
 then
