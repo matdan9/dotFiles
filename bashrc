@@ -42,11 +42,13 @@ export lamp="10.10.4.36 - LAMP (PHP 7.4)"
 export TERM=xterm-256color
 export VISUAL="vim"
 export EDITOR="vim"
+export TERMINAL="alacritty"
 
 alias rob="mpv https://www.twitch.tv/rwxrob"
 alias cloud="cd $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs"
 alias gitlen="git ls-files | xargs wc -l"
 alias ls="ls --color -h"
+alias vi="vim"
 
 if [ "$(uname)" = "Darwin" ]
 then
