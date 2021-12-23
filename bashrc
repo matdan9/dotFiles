@@ -45,7 +45,6 @@ export EDITOR="vim"
 export TERMINAL="alacritty"
 
 alias rob="mpv https://www.twitch.tv/rwxrob"
-alias cloud="cd $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs"
 alias gitlen="git ls-files | xargs wc -l"
 alias ls="ls --color -h"
 alias vi="vim"
@@ -53,6 +52,7 @@ alias vi="vim"
 if [ "$(uname)" = "Darwin" ]
 then
 	export BASH_SILENCE_DEPRECATION_WARNING=1
+	alias cloud="cd $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs"
 fi
 
 set -o vi
