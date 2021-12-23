@@ -233,14 +233,14 @@ exec_always "setxkbmap -option 'grp:ctrl_alt_toggle'"
 exec_always picom -f
  
 # Force workspace 10 to monitor 2
-workspace $sw1 output $mainMonitor
-workspace $sw2 output $mainMonitor
-workspace $sw3 output $mainMonitor
-workspace $sw4 output $mainMonitor
-workspace $sw5 output $mainMonitor
-workspace $sw6 output $mainMonitor
+workspace $ws1 output $mainMonitor
+workspace $ws2 output $mainMonitor
+workspace $ws3 output $mainMonitor
+workspace $ws4 output $mainMonitor
+workspace $ws5 output $mainMonitor
+workspace $ws6 output $mainMonitor
 
-workspace $sw7 output $secMonitor
-workspace $sw8 output $secMonitor
-workspace $sw9 output $secMonitor
-workspace $sw10 output $secMonitor
+workspace $ws7 output $secMonitor
+workspace $ws8 output $secMonitor
+workspace $ws9 output $secMonitor
+workspace $ws10 output $secMonitor
