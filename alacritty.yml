@@ -20,6 +20,11 @@
 
 background_opacity: 0.75
 
+cursor:
+  style:
+    blinking: Always
+    blink_interval: 400
+
 schemes:
     cobalt: &cobalt
       cursor:
