@@ -188,10 +188,6 @@ bar {
 
 ### added configs ###############################################
 
-# Pulse Audio controls
-# bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
-# bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-# bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
@@ -224,7 +220,7 @@ exec_always xinput --set-prop 8 'libinput Accel Profile Enabled' 0, 1
 exec_always xset r rate 200 30
 
 # Set keyboard layout
-exec_always "setxkbmap -layout us,fr"
+exec_always "setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'"
 
 # Change keyboar layout with Ctrl + Alt
 exec_always "setxkbmap -option 'grp:ctrl_alt_toggle'"
