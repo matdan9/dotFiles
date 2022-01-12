@@ -9,7 +9,7 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod1
+set $mod Mod4
 
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -214,7 +214,11 @@ exec_always xrandr --output DVI-D-0 --off --output HDMI-0 --off --output DP-0 --
 
 # Set mouse settings
 # exec_always xset m 1 1
+exec_always xinput --set-prop 10 'libinput Accel Profile Enabled' 0, 1
 exec_always xinput --set-prop 8 'libinput Accel Profile Enabled' 0, 1
+# exec_always xinput --set-prop 9 'libinput Accel Profile Enabled' 0, 1
+# exec_always xinput --set-prop 9 'libinput Accel Profile Enabled' 0, 1
+exec_always xset mouse 3 3
 
 # Set keyboard key repeat
 exec_always xset r rate 200 30
@@ -240,3 +244,6 @@ workspace $ws7 output $secMonitor
 workspace $ws8 output $secMonitor
 workspace $ws9 output $secMonitor
 workspace $ws10 output $secMonitor
+
+# screen shot
+bindsym $mod+Shift+s exec import /tmp/ss.png && xclip -selection clipboard -t image/png -i /tmp/ss.png
