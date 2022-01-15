@@ -247,3 +247,6 @@ workspace $ws10 output $secMonitor
 
 # screen shot
 bindsym $mod+Shift+s exec import /tmp/ss.png && xclip -selection clipboard -t image/png -i /tmp/ss.png
+
+# add fonts
+font pango:Hack Nerd Font Mono 10
