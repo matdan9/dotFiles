@@ -13,7 +13,7 @@ done
 
 echo Configuring your git
 
-git config --global core.excludesfile .*.swp
+git config --global core.excludesfile ~/.gitignore
 git config --global core.editor $EDITOR
 git config --global core.autocrlf input
 
