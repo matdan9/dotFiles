@@ -4,7 +4,7 @@ set nu rnu
 " tabs/spaces size
 set ts=4 sw=4
 set autoindent
-set spell
+" set spell
 set backspace=indent,eol,start
 set smartindent
 
@@ -40,14 +40,14 @@ set statusline +=%0*\ %f				" file name
 " Right align
 set statusline +=%0*\ %=%l				" current line
 set statusline +=%0*\ /%L\ 				" total lines
-set statusline +=%3*\ [%03p%%]\ 		" total lines
+set statusline +=%3*\ [%03p%%]\ 		" lines percentage
 set statusline +=%2*\ [%{&ff}\]\ 		" file type
 
-" colors
-hi User0 ctermbg=DarkGrey
-hi User1 ctermbg=DarkGreen
-hi User2 ctermbg=DarkYellow
-hi User3 ctermbg=DarkCyan
+" COLORS
+hi User0 ctermfg=White ctermbg=DarkGrey
+hi User1 ctermfg=White ctermbg=DarkBlue
+hi User2 ctermfg=White ctermbg=DarkBlue
+hi User3 ctermfg=DarkGrey ctermbg=DarkCyan
 
 " COLORS AND STUFF
 " best color delek, koehler, desert, zellner, 

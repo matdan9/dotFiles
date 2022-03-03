@@ -1,15 +1,27 @@
 #!/bin/sh
 
+dir=$(cd $(dirname $0) | pwd)
+
 echo "STARTING THE INSTALL"
 
-for entry in *
-do
-	if [ $entry = "install.sh" ]; then
-		continue
-	fi
-	ln -sf $(pwd)/$entry $HOME/.$entry
-	echo $(pwd)/$entry
-done
+install () {
+	echo new dir $1
+	for entry in $1
+	do
+		if [ $entry = "install.sh" ]; then
+			continue
+		fi
+		if [ -d $entry ]; then
+			mkdir $HOME/.$entry
+			install "$entry/*"
+			continue
+		fi
+		ln -sf $(pwd)/$entry $HOME/.$entry
+		echo $(pwd)/$entry
+	done
+}
+
+install "*" 
 
 echo Configuring your git
 
