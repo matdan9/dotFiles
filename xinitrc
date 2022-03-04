@@ -29,4 +29,10 @@ exec picom -f &
 # Wall paper
 feh --bg-scale ~/Pictures/wallpaper.jpg
 
+# adding a clock to DWM
+while true; do
+	xsetroot -name "$(date)"
+	sleep 1s
+done &
+
 exec dwm
