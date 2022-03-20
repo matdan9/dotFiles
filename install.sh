@@ -40,3 +40,5 @@ git config --global user.name ${name}
 echo "Setting up git alias"
 git config --global alias.open "! sh -c gopen"
 git config --global alias.len "! sh -c \"git ls-files | xargs wc -l\""
+git config --global alias.rpush "! sh -c \"git push --set-upstream origin $(git branch --show-current)\""
+git config --global alias.stat "! sh -c gstat"
