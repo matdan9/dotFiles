@@ -49,6 +49,7 @@ alias gitlen="git ls-files | xargs wc -l"
 alias ls="ls --color -h"
 alias vi="vim"
 alias less="less -R"
+alias grep="grep --color=always"
 
 # REMOVE MACOS WARNING FOR BASH
 if [ "$(uname)" = "Darwin" ]

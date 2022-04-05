@@ -19,7 +19,7 @@ set hlsearch
 set t_Co=256
 set background=dark
 colo gruvbox
-hi Normal guibg=NONE ctermbg=NONE
+"hi Normal guibg=NONE ctermbg=NONE
 
 " SPECIFIC FILE CONFIG
 autocmd BufEnter *.py set sta et fo=croql
