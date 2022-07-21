@@ -27,7 +27,8 @@ autocmd BufEnter *.java set sta et fo=croql
 autocmd BufEnter *.yml set sw=2 ts=2 sta et fo=croql
 autocmd BufEnter *.html set sw=2 ts=2 
 autocmd BufEnter *.blade.php set sw=2 ts=2
-autocmd BufEnter *.xml set sta sw=2 ts=2 fo=croql et
+autocmd BufEnter *.xml set sta et fo=croql sw=2 ts=2
+autocmd BufEnter *.java set sta et fo=croql sw=4 ts=4
 
 " STATUS LINE
 let gitBranch=system("git branch --show-current 2> /dev/null")
