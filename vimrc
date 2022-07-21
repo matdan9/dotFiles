@@ -23,6 +23,7 @@ colo gruvbox
 
 " SPECIFIC FILE CONFIG
 autocmd BufEnter *.py set sta et fo=croql
+autocmd BufEnter *.java set sta et fo=croql
 autocmd BufEnter *.yml set sw=2 ts=2 sta et fo=croql
 autocmd BufEnter *.html set sw=2 ts=2 
 autocmd BufEnter *.blade.php set sw=2 ts=2

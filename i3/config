@@ -251,7 +251,7 @@ exec_always "setxkbmap -option 'grp:ctrl_alt_toggle'"
 
 # Allow transparancy
 exec_always picom -f
- 
+
 # Force workspace 10 to monitor 2
 workspace $ws1 output $mainMonitor
 workspace $ws2 output $mainMonitor
