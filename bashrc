@@ -13,8 +13,8 @@ CYAN="\[\e[36m\]"
 LIGTH="\[\e[37m\]"
 DARK_GREY="\[\e[90m\]"
 LIGHT_RED="\[\e[91m\]"
-LIGTH_GREEN="\[\e[92m\]"
-LIGTH_YELLOW="\[\e[93m\]"
+LIGHT_GREEN="\[\e[92m\]"
+LIGHT_YELLOW="\[\e[93m\]"
 BOLD="\[\e[1m\]"
 DARK=$DARK_GREY
 
