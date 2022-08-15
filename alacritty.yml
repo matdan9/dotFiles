@@ -18,7 +18,7 @@ font:
   size: 10
 
 window:
-  opacity: 0.85
+  opacity: 0.90
 
 cursor:
   style:
@@ -26,39 +26,13 @@ cursor:
     blink_interval: 400
 
 schemes:
-  matdan: &matdan
-# Default colors
-    primary:
-      background: '0x222d31'
-      foreground: '0xc5c8c6'
-
-    bright:
-      black:   '0x515b64'
-      red:     '0xf76d47'
-      green:   '0x91b859'
-      yellow:  '0xffb62c'
-      blue:    '0x82aaff'
-      magenta: '0xc792ea'
-      cyan:    '0x89ddff'
-      white:   '0xb2ccd6'
-
-    # Bright colors
-    normal:
-      black:   '0x3d444b'
-      red:     '0xf78c6c'
-      green:   '0xb5bd68'
-      yellow:  '0xffcb6b'
-      blue:    '0x6182b8'
-      magenta: '0xb294bb'
-      cyan:    '0x39adb5'
-      white:   '0x8796b0'
 
   solarized: &solarized
     primary:
       background: '0x002b36'
       foreground: '0x839496'
 
-# Normal colors
+# Normal colors '0x003642'
     normal:
       black:   '0x073642'
       red:     '0xdc322f'
@@ -71,7 +45,7 @@ schemes:
 
 # Bright colors
     bright:
-      black:   '0x002b36'
+      black:   '0x657b83'
       red:     '0xcb4b16'
       green:   '0x586e75'
       yellow:  '0x657b83'
@@ -138,4 +112,4 @@ schemes:
         cyan:    '#427b58'
         white:   '#928374'
 
-colors: *matdan
+colors: *solarized

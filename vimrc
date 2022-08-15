@@ -16,9 +16,11 @@ set fileencoding=utf-8
 set encoding=utf-8
 set hlsearch
 
-set t_Co=256
+
+"set t_Co=256
 set background=dark
-colo matdan
+
+colo solarized
 hi Normal guibg=NONE ctermbg=NONE
 
 " SPECIFIC FILE CONFIG

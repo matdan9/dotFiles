@@ -4,19 +4,21 @@ export CLICOLOR=1
 RESET="\[\e[0m\]"
 DEF="\[\e[39m\]"
 BLACK="\[\e[30m\]"
+BRIGHT_BLACK="\[\e[90m\]"
 RED="\[\e[31m\]"
 GREEN="\[\e[32m\]"
 YELLOW="\[\e[33m\]"
 BLUE="\[\e[34m\]"
 MAGENTA="\[\e[35m\]"
 CYAN="\[\e[36m\]"
-LIGTH="\[\e[37m\]"
+WHITE="\[\e[37m\]"
+BRIGHT_WHITE="\[\e[97m\]"
 DARK_GREY="\[\e[90m\]"
 LIGHT_RED="\[\e[91m\]"
 LIGHT_GREEN="\[\e[92m\]"
 LIGHT_YELLOW="\[\e[93m\]"
 BOLD="\[\e[1m\]"
-DARK=$DARK_GREY
+DARK=$BRIGHT_BLACK
 
 # CUSTOM PROMPT
 __ps1() {
