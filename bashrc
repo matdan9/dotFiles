@@ -45,6 +45,17 @@ export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
 
+if command -v docker-machine &> /dev/null
+then
+	export DOCKER_TLS_VERIFY="1"
+	export DOCKER_HOST="tcp://192.168.99.101:2376"
+	export DOCKER_CERT_PATH="/Users/mathieu-danielgariepy/.docker/machine/machines/default"
+	export DOCKER_MACHINE_NAME="default"
+	if (docker-machine ls | grep "default.*Running.*") &> /dev/null ; then
+		eval $(docker-machine env) 2&> /dev/null
+	fi
+fi
+
 # ALIASES
 alias rob="mpv https://www.twitch.tv/rwxrob"
 alias gitlen="git ls-files | xargs wc -l"
