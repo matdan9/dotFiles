@@ -51,7 +51,7 @@ then
 	export DOCKER_HOST="tcp://192.168.99.101:2376"
 	export DOCKER_CERT_PATH="/Users/mathieu-danielgariepy/.docker/machine/machines/default"
 	export DOCKER_MACHINE_NAME="default"
-	if (docker-machine ls | grep "default.*Running.*") &> /dev/null ; then
+	if (docker-machine env) &> /dev/null ; then
 		eval $(docker-machine env) 2&> /dev/null
 	fi
 fi
