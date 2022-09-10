@@ -44,6 +44,7 @@ export TERM=xterm-256color
 export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
+export PATH="${PATH}:~/go/bin"
 
 if command -v docker-machine &> /dev/null
 then
