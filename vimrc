@@ -16,7 +16,6 @@ set fileencoding=utf-8
 set encoding=utf-8
 set hlsearch
 
-
 "set t_Co=256
 set background=dark
 
@@ -30,6 +29,8 @@ autocmd BufEnter *.html set sw=2 ts=2
 autocmd BufEnter *.blade.php set sw=2 ts=2
 autocmd BufEnter *.xml set sta et fo=croql sw=2 ts=2
 autocmd BufEnter *.java set sta et fo=croql sw=4 ts=4
+autocmd BufEnter *.ts set sta et fo=croql sw=2 ts=2
+autocmd BufEnter *.pug set sta et fo=croql sw=2 ts=2
 
 " STATUS LINE
 let gitBranch=system("git branch --show-current 2> /dev/null")
@@ -40,7 +41,7 @@ set statusline=
 execute "set statusline +=%1*\\ " . gitBranch
 set statusline +=\ %3*\ %y\  			" file type
 set statusline +=%0*\ %f				" file name
-									
+
 " Right align
 set statusline +=%0*\ %=%l				" current line
 set statusline +=%0*\ /%L\ 				" total lines
@@ -52,6 +53,8 @@ hi User0 ctermfg=White ctermbg=DarkGrey
 hi User1 ctermfg=White ctermbg=DarkBlue
 hi User2 ctermfg=White ctermbg=DarkBlue
 hi User3 ctermfg=DarkGrey ctermbg=DarkCyan
+
+command Cleanup %s/\s\+$//e
 
 " COLORS AND STUFF
 " best color delek, koehler, desert, zellner, 
