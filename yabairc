@@ -1,0 +1,21 @@
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+yabai -m config layout bsp
+
+# prevent bug when right click
+yabai -m config focus_follows_mouse off
+
+# floating window always top
+yabai -m config window_topmost on
+
+# resize window with mouse
+yabai -m config mouse_action2 resize
+yabai -m config mouse_drop_action swap
+
+# padding
+yabai -m config window_gap 10
+yabai -m config top_padding 5
+yabai -m config bottom_padding 5
+yabai -m config left_padding 5
+yabai -m config right_padding 5
