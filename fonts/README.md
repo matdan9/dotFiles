@@ -1,3 +1,1 @@
-### Using HACK NERD font
-
-original can be found [here](https://dwm.suckless.org/)
+This is the Hack font nerd version taken from https://github.com/ryanoasis/nerd-fonts

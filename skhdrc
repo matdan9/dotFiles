@@ -1,40 +1,60 @@
 # inspired by https://blog.dsubachev.com/install-a-tiling-window-manager-on-your-mac/
 
+alt - return : alacritty
+
 # YABIA STUFF
 
 ## navigation
-alt - h : yabai -m window --focus west
-alt - j : yabai -m window --focus south
-alt - k : yabai -m window --focus north
-alt - l : yabai -m window --focus east
+cmd - h : yabai -m window --focus west
+cmd - j : yabai -m window --focus south
+cmd - k : yabai -m window --focus north
+cmd - l : yabai -m window --focus east
 
 ## moving windows
 
-shift + alt - h : yabai -m window --warp west
-shift + alt - j : yabai -m window --warp south
-shift + alt - k : yabai -m window --warp north
-shift + alt - l : yabai -m window --warp east
+shift + cmd - h : yabai -m window --warp west
+shift + cmd - j : yabai -m window --warp south
+shift + cmd - k : yabai -m window --warp north
+shift + cmd - l : yabai -m window --warp east
 
-## chanching workspace
-alt - 1 : yabai -m space --focus 1
-alt - 2 : yabai -m space --focus 2
-alt - 3 : yabai -m space --focus 3
-alt - 4 : yabai -m space --focus 4
-alt - 5 : yabai -m space --focus 5
+## chanching workspace (disable SIP)
+#cmd - 1 : yabai -m space --focus 1
+#cmd - 2 : yabai -m space --focus 2
+#cmd - 3 : yabai -m space --focus 3
+#cmd - 4 : yabai -m space --focus 4
+#cmd - 5 : yabai -m space --focus 5
 
 ## chanching window's workspace
 
-shift + alt - 1 : yabai -m window --space 1
-shift + alt - 2 : yabai -m window --space 2
-shift + alt - 3 : yabai -m window --space 3
-shift + alt - 4 : yabai -m window --space 4
-shift + alt - 4 : yabai -m window --space 5
+shift + cmd - 1 : yabai -m window --space 1
+shift + cmd - 2 : yabai -m window --space 2
+shift + cmd - 3 : yabai -m window --space 3
+shift + cmd - 4 : yabai -m window --space 4
+shift + cmd - 5 : yabai -m window --space 5
+shift + cmd - 6 : yabai -m window --space 6
+shift + cmd - 7 : yabai -m window --space 7
+shift + cmd - 8 : yabai -m window --space 8
+shift + cmd - 9 : yabai -m window --space 9
+shift + cmd - 0 : yabai -m window --space 10
 
 ## resize windows
 
 ## float window
-alt - space : yabai -m window --toggle float
+cmd - space : yabai -m window --toggle float
 
 ## focus window
-alt - m : yabai -m window --toggle zoom-fullscreen
+cmd - m : yabai -m window --toggle zoom-fullscreen
+
+## displays
+cmd - 0x2F : yabai -m display --focus recent
+#cmd - 1 : yabai -m display --focus previous
+#cmd - 2 : yabai -m display --focus previous
+#cmd - 3 : yabai -m display --focus previous
+#cmd - 4 : yabai -m display --focus previous
+#cmd - 5 : yabai -m display --focus previous
+#cmd - 6 : yabai -m display --focus next
+#cmd - 7 : yabai -m display --focus next
+#cmd - 8 : yabai -m display --focus next
+#cmd - 9 : yabai -m display --focus next
+#cmd - 0 : yabai -m display --focus next
 

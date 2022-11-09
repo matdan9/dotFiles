@@ -11,7 +11,7 @@ yabai -m config window_topmost on
 
 # resize window with mouse
 yabai -m config mouse_action2 resize
-yabai -m config mouse_drop_action swap
+# yabai -m config mouse_drop_action swap
 
 # padding
 yabai -m config window_gap 10

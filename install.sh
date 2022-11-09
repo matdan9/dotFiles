@@ -23,6 +23,12 @@ install () {
 
 install "*" 
 
+echo Getting vim themes
+
+for t in $(cat ${dir}/vimThemeSources); do
+	curl -L "${t}" --output-dir ./vim/colors/ --remote-name
+done
+
 echo Configuring your git
 
 git config --global core.excludesfile ~/.gitignore

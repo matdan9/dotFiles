@@ -18,8 +18,9 @@ set hlsearch
 
 "set t_Co=256
 set background=dark
+let g:gruvbox_contrast_dark='soft'
 
-colo solarized
+colo gruvbox
 hi Normal guibg=NONE ctermbg=NONE
 
 " SPECIFIC FILE CONFIG

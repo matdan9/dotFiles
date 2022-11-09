@@ -112,4 +112,4 @@ schemes:
         cyan:    '#427b58'
         white:   '#928374'
 
-colors: *solarized
+colors: *gruvbox
