@@ -51,9 +51,9 @@ set statusline +=%2*\ [%{&ff}\]\ 		" file type
 
 " COLORS
 hi User0 ctermfg=White ctermbg=DarkGrey
-hi User1 ctermfg=White ctermbg=DarkBlue
-hi User2 ctermfg=White ctermbg=DarkBlue
-hi User3 ctermfg=DarkGrey ctermbg=DarkCyan
+hi User1 ctermfg=White ctermbg=DarkYellow
+hi User2 ctermfg=White ctermbg=DarkYellow
+hi User3 ctermfg=DarkGrey ctermbg=Yellow
 
 command Cleanup %s/\s\+$//e
 

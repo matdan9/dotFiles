@@ -1,3 +1,6 @@
+shell:
+  program: /usr/local/bin/bash
+
 font:
   normal:
     family: "Hack Nerd Font Mono"
