@@ -20,8 +20,8 @@ font:
 
   size: 10
 
-window:
-  opacity: 0.90
+#window:
+  #opacity: 0.90
 
 cursor:
   style:
@@ -60,8 +60,10 @@ schemes:
     gruvbox: &gruvbox
       primary:
         # hard contrast background - '#1d2021'
-        background:        &gruvbox_dark_bg '#282828'
+        #background:        &gruvbox_dark_bg '#282828'
+        background:        &gruvbox_dark_bg '#1d2021'
         # soft contrast background - '#32302f'
+        #background:        &gruvbox_dark_bg '#32302f'
         foreground:        '#fbf1c7'
         bright_foreground: '#f9f5d7'
         dim_foreground:    '#f2e5bc'

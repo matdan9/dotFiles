@@ -8,6 +8,9 @@ set autoindent
 set backspace=indent,eol,start
 set smartindent
 
+" set persistant history
+set undodir=~/.vim/undodir
+
 " USE FOR SPACE OVER TABS
 " set tabstop=4 shiftwidth=4 expandtab softtabstop=4
 
