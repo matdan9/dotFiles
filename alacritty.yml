@@ -6,6 +6,8 @@ font:
     family: "Hack Nerd Font Mono"
     style: Regular
 
+  style: Regular
+
   bold:
     family: "Hack Nerd Font Mono"
     style: Bold
@@ -18,10 +20,14 @@ font:
     family: "Hack Nerd Font Mono"
     style: Bold Italic
 
-  size: 10
+  size: 11
 
-#window:
-  #opacity: 0.90
+  offset:
+    x: 1
+    y: 1
+
+window:
+  opacity: 0.80
 
 cursor:
   style:
@@ -29,6 +35,53 @@ cursor:
     blink_interval: 400
 
 schemes:
+
+  everforest_dark_hard: &everforest_dark_hard
+    primary:
+      background: '#272e33'
+      foreground: '#d3c6aa'
+    normal:
+      black:   '#414b50'
+      red:     '#e67e80'
+      green:   '#a7c080'
+      yellow:  '#dbbc7f'
+      blue:    '#7fbbb3'
+      magenta: '#d699b6'
+      cyan:    '#83c092'
+      white:   '#d3c6aa'
+    bright:
+      black:   '#475258'
+      red:     '#e67e80'
+      green:   '#a7c080'
+      yellow:  '#dbbc7f'
+      blue:    '#7fbbb3'
+      magenta: '#d699b6'
+      cyan:    '#83c092'
+      white:   '#d3c6aa'
+
+  everforest_dark_medium: &everforest_dark_medium
+    primary:
+      background: '#2d353b'
+      foreground: '#d3c6aa'
+    normal:
+      black:   '#475258'
+      red:     '#e67e80'
+      green:   '#a7c080'
+      yellow:  '#dbbc7f'
+      blue:    '#7fbbb3'
+      magenta: '#d699b6'
+      cyan:    '#83c092'
+      white:   '#d3c6aa'
+    bright:
+      black:   '#475258'
+      red:     '#e67e80'
+      green:   '#a7c080'
+      yellow:  '#dbbc7f'
+      blue:    '#7fbbb3'
+      magenta: '#d699b6'
+      cyan:    '#83c092'
+      white:   '#d3c6aa'
+
 
   solarized: &solarized
     primary:
@@ -57,13 +110,58 @@ schemes:
       cyan:    '0x93a1a1'
       white:   '0xfdf6e3'
 
+  nord: &nord
+    primary:
+      background: "#2e3440"
+      foreground: "#d8dee9"
+      dim_foreground: "#a5abb6"
+    cursor:
+      text: "#2e3440"
+      cursor: "#d8dee9"
+    vi_mode_cursor:
+      text: "#2e3440"
+      cursor: "#d8dee9"
+    selection:
+      text: CellForeground
+      background: "#4c566a"
+    search:
+      matches:
+        foreground: CellBackground
+        background: "#88c0d0"
+      footer_bar:
+        background: "#434c5e"
+        foreground: "#d8dee9"
+    normal:
+      black: "#3b4252"
+      red: "#bf616a"
+      green: "#a3be8c"
+      yellow: "#ebcb8b"
+      blue: "#81a1c1"
+      magenta: "#b48ead"
+      cyan: "#88c0d0"
+      white: "#e5e9f0"
+    bright:
+      black: "#4c566a"
+      red: "#bf616a"
+      green: "#a3be8c"
+      yellow: "#ebcb8b"
+      blue: "#81a1c1"
+      magenta: "#b48ead"
+      cyan: "#8fbcbb"
+      white: "#eceff4"
+    dim:
+      black: "#373e4d"
+      red: "#94545d"
+      green: "#809575"
+      yellow: "#b29e75"
+      blue: "#68809a"
+      magenta: "#8c738c"
+      cyan: "#6d96a5"
+      white: "#aeb3bb"
+
     gruvbox: &gruvbox
       primary:
-        # hard contrast background - '#1d2021'
-        #background:        &gruvbox_dark_bg '#282828'
         background:        &gruvbox_dark_bg '#1d2021'
-        # soft contrast background - '#32302f'
-        #background:        &gruvbox_dark_bg '#32302f'
         foreground:        '#fbf1c7'
         bright_foreground: '#f9f5d7'
         dim_foreground:    '#f2e5bc'
@@ -73,19 +171,6 @@ schemes:
       vi_mode_cursor:
         text:   CellBackground
         cursor: CellForeground
-      # search:
-      #   matches:
-      #     foreground: '#000000'
-      #     background: '#ffffff'
-      #   focused_match:
-      #    foreground: CellBackground
-      #    background: CellForeground
-      #   bar:
-      #     background: ''
-      #     foreground: ''
-      # line_indicator:
-      #   foreground: None
-      #   background: None
       selection:
         text:       CellBackground
         background: CellForeground
@@ -117,4 +202,4 @@ schemes:
         cyan:    '#427b58'
         white:   '#928374'
 
-colors: *gruvbox
+colors: *nord

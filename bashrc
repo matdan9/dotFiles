@@ -69,6 +69,7 @@ alias ls="ls --color -h"
 alias vi="vim"
 alias less="less -R"
 alias grep="grep --color=always -n"
+alias nv="nvim"
 
 # USE VIM KEYBINDS
 set -o vi
@@ -82,3 +83,5 @@ then
 
 	[[ -r "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]] && . "$(brew --prefix)/etc/profile.d/bash_completion.sh"
 fi
+
+eval "$(/usr/libexec/path_helper)"
