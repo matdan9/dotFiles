@@ -27,7 +27,7 @@ font:
     y: 1
 
 window:
-  opacity: 0.80
+  opacity: 1.00
 
 cursor:
   style:
