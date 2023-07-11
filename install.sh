@@ -5,21 +5,28 @@ dir=$(cd $(dirname $0) | pwd)
 echo "STARTING THE INSTALL"
 
 install () {
-	echo new dir $1
 	for entry in $1
 	do
 		if [ $entry = "install.sh" ]; then
 			continue
 		fi
 		if [ -d $entry ]; then
-			mkdir $HOME/.$entry
 			install "$entry/*"
 			continue
 		fi
-		ln -sf $(pwd)/$entry $HOME/.$entry
-		echo $(pwd)/$entry
+		if [ $(dirname $entry) = "." ]; then
+			echo "HOME DIR"
+		else
+			mkdir -p "${HOME}/.$(dirname $entry)"
+			echo "new dir ${HOME}/.$(dirname $entry)"
+		fi
+		echo "ln -sf $(pwd)/$entry ${HOME}/.$entry"
+		ln -sf "$(pwd)/$entry" "${HOME}/.$entry"
 	done
 }
+
+install "*"
+exit 1
 
 echo Getting vim themes
 
