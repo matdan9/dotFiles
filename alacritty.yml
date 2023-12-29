@@ -22,12 +22,8 @@ font:
 
   size: 11
 
-  offset:
-    x: 1
-    y: 1
-
 window:
-  opacity: 1.00
+  opacity: 1
 
 cursor:
   style:
@@ -202,4 +198,4 @@ schemes:
         cyan:    '#427b58'
         white:   '#928374'
 
-colors: *nord
+colors: *everforest_dark_hard

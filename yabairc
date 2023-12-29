@@ -8,6 +8,7 @@ yabai -m config focus_follows_mouse off
 
 # floating window always top
 yabai -m config window_topmost on
+yabai -m config auto_balance on
 
 # resize window with mouse
 yabai -m config mouse_action2 resize

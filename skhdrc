@@ -57,4 +57,3 @@ cmd - 0x2F : yabai -m display --focus recent
 #cmd - 8 : yabai -m display --focus next
 #cmd - 9 : yabai -m display --focus next
 #cmd - 0 : yabai -m display --focus next
-
