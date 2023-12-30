@@ -1,3 +1,6 @@
+"set incsearch
+"set ic
+
 " line numbers
 set nu rnu
 
@@ -22,6 +25,10 @@ set hlsearch
 "set t_Co=256
 set background=dark
 "let g:gruvbox_contrast_dark='soft'
+
+" setting bash like autocompletion for file names
+set wildmode=longest,list
+set wildmenu
 
 colo gruvbox
 hi Normal guibg=NONE ctermbg=NONE
