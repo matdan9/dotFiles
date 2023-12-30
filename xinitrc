@@ -4,7 +4,7 @@ monitor1=DP-3
 monitor2=DP-4
 
 # Multiple monitors
-xrandr --output DVI-D-0 --off --output HDMI-0 --off --output DP-0 --off --output DP-1 --off --output $monitor2 --primary --mode 1920x1080 --pos 0x0 --rotate normal --rate 144.00  --output $monitor1 --mode 1920x1080 --pos 1920x0 --rotate normal --rate 60.00
+# xrandr --output DVI-D-0 --off --output HDMI-0 --off --output DP-0 --off --output DP-1 --off --output $monitor2 --primary --mode 1920x1080 --pos 0x0 --rotate normal --rate 144.00  --output $monitor1 --mode 1920x1080 --pos 1920x0 --rotate normal --rate 60.00
 
 # Set mouse settings
 # xset m 1 1
@@ -35,4 +35,4 @@ while true; do
 	sleep 1s
 done &
 
-exec dwm
+exec i3

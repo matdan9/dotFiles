@@ -1,5 +1,5 @@
 shell:
-  program: /usr/local/bin/bash
+  program: /bin/bash
 
 font:
   normal:
