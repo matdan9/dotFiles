@@ -44,6 +44,15 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.opt.guicursor = ""
+
+vim.opt.nu = true
+vim.opt.relativenumber = true
+
+vim.opt.smartindent = true
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -153,8 +162,10 @@ require('lazy').setup({
   },
 
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    -- Theme
+    "neanias/everforest-nvim",
+    version = false,
+    lazy = false,
     priority = 1000,
   },
 
@@ -165,7 +176,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = true,
-        theme = 'onedark',
+        theme = 'everforest',
         component_separators = '|',
         section_separators = '',
       },
@@ -286,6 +297,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
+require("everforest").load()
+
 require('telescope').setup {
   defaults = {
     mappings = {
@@ -537,16 +550,9 @@ cmp.setup {
   },
 }
 
-vim.opt.guicursor = ""
-
-vim.opt.nu = true
-vim.opt.relativenumber = true
-
-vim.opt.smartindent = true
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.cmd [[ set background=dark ]]
-vim.cmd([[colorscheme onedark]])
+vim.cmd([[set background=dark]])
+vim.cmd([[set ts=4 sw=4]])
+vim.cmd([[colorscheme everforest]])
 -- vim.opt.expandtab = false
 
 -- vim.opt.swapfile = true
