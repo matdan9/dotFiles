@@ -380,7 +380,7 @@ vim.defer_fn(function()
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
-    sync_install = false,
+    sync_install = true,
 
     highlight = {
       enable = true,

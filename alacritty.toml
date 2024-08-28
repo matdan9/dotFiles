@@ -49,10 +49,10 @@ family = "Hack Nerd Font Mono"
 style = "Regular"
 
 [shell]
-program = "/usr/local/bin/bash"
+program = "/bin/bash"
 
 [window]
-opacity = 1
+opacity = 1.0
 
 # [schemes.everforest_dark_hard.bright]
 # black = "#475258"

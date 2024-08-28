@@ -1,10 +1,8 @@
 #!/bin/sh
 
-monitor1=DP-3
-monitor2=DP-4
-
-# Multiple monitors
-# xrandr --output DVI-D-0 --off --output HDMI-0 --off --output DP-0 --off --output DP-1 --off --output $monitor2 --primary --mode 1920x1080 --pos 0x0 --rotate normal --rate 144.00  --output $monitor1 --mode 1920x1080 --pos 1920x0 --rotate normal --rate 60.00
+# Set monitor variables
+mainMonitor=HDMI-0
+secMonitor=DP-0
 
 # Set mouse settings
 # xset m 1 1
@@ -26,6 +24,8 @@ setxkbmap -option 'grp:ctrl_alt_toggle'
 # Allow transparancy
 # exec picom -f &
 
+xrandr --output HDMI-0 --mode 1920x1080 --pos 0x0 --rotate normal --rate 119.98 --output DP-0 --primary --mode 3840x2160 --pos 0x1080 --rotate normal --rate 143.99
+
 # Wall paper
 feh --bg-scale "/home/matdan/Pictures/$(ls ~/Pictures | shuf -n 1)"
 
@@ -35,4 +35,6 @@ while true; do
 	sleep 1s
 done &
 
-exec i3
+# exec i3
+exec dwm
+

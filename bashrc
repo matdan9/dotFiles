@@ -44,7 +44,7 @@ export TERM=xterm-256color
 export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
-export PATH="/usr/local/bin:${PATH}:~/go/bin"
+export PATH="/usr/local/bin:${PATH}:~/go/bin:~/.local/bin"
 #/System/Cryptexes/App/usr/bin:/Library/TeX/texbin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS
 
 setDocker() {
@@ -86,3 +86,7 @@ then
 	eval "$(/usr/libexec/path_helper)"
 fi
 
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)

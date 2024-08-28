@@ -1,6 +1,10 @@
 "set incsearch
 "set ic
 
+" beuffer switching keybinds
+map gn :bnext<cr>
+map gp :bprevious<cr>
+
 " line numbers
 set nu rnu
 

@@ -25,9 +25,6 @@ install () {
 	done
 }
 
-install "*"
-exit 1
-
 echo Getting vim themes
 
 for t in $(cat ${dir}/vimThemeSources); do
