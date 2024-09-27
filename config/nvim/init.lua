@@ -553,6 +553,8 @@ cmp.setup {
 vim.cmd([[set background=dark]])
 vim.cmd([[set ts=4 sw=4]])
 vim.cmd([[colorscheme everforest]])
+vim.cmd([[map gn :bnext<cr>]])
+vim.cmd([[map gp :bprevious<cr>]])
 -- vim.opt.expandtab = false
 
 -- vim.opt.swapfile = true
