@@ -11,6 +11,13 @@
 
 set $mod Mod4
 
+# Set monitor variables
+set $mainMonitor DP-0
+set $secMonitor HDMI-0
+
+# Multiple monitors
+exec --no-startup-id xrandr --output DP-0 --primary --mode 3840x2160 --pos 0x1080 --rotate normal --rate 143.99 --output HDMI-0 --mode 1920x1080 --pos 0x0 --rotate normal --rate 119.98 
+
 # add fonts
 font pango:Hack Nerd Font Mono 12
 
@@ -223,13 +230,6 @@ bindsym XF86AudioPrev exec playerctl previous
 # Set wall paper
 exec_always feh --bg-scale /home/matdan/Pictures/wallpaper.jpg
 
-# Set monitor variables
-set $mainMonitor HDMI-0
-set $secMonitor DP-0
-
-# Multiple monitors
-exec_always xrandr --output HDMI-0 --mode 3440x1440 --pos 1920x0 --rotate normal --rate 49.99 --output DP-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --rate 143.98
-
 # Set mouse settings
 # exec_always xset m 1 1
 exec_always xinput --set-prop 10 'libinput Accel Profile Enabled' 0, 1
@@ -239,13 +239,13 @@ exec_always xinput --set-prop 9 'libinput Accel Profile Enabled' 0, 1
 exec_always xset mouse 2 2
 
 # Set keyboard key repeat
-exec_always xset r rate 200 50
+exec_always xset r rate 400 50
 
 # Set keyboard layout
-exec_always "setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'"
+exec "setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'"
 
 # Change keyboar layout with Ctrl + Alt
-exec_always "setxkbmap -option 'grp:ctrl_alt_toggle'"
+exec "setxkbmap -option 'grp:ctrl_alt_toggle'"
 
 # Allow transparancy
 # exec_always picom -f
@@ -265,4 +265,5 @@ workspace $ws10 output $secMonitor
 
 # screen shot
 bindsym $mod+Shift+s exec import /tmp/ss.png && xclip -selection clipboard -t image/png -i /tmp/ss.png
+bindsym $mod+Tab exec "setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'"
 
