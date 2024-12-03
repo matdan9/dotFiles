@@ -53,7 +53,3 @@ git config --global user.email ${email}
 echo "Enter you name for your git config"
 read name
 git config --global user.name ${name}
-
-# NVIM SUTFF BECAUSE I HAVE TO TRY IT ATLEAST ONCE EVEN IF I DON'T LIKE IT'S APPROCHE
-# installer packer (package manager)
-git clone --depth 1 https://github.com/wbthomason/packer.nvim\ ~/.local/share/nvim/site/pack/packer/start/packer.nvim

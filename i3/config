@@ -265,5 +265,5 @@ workspace $ws10 output $secMonitor
 
 # screen shot
 bindsym $mod+Shift+s exec import /tmp/ss.png && xclip -selection clipboard -t image/png -i /tmp/ss.png
-bindsym $mod+Tab exec "setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'"
+bindsym $mod+Tab exec "setxkbmap -layout 'us,ca' -option 'grp:ctrl_alt_toggle,grp_led:num'"
 
