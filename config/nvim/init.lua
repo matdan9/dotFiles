@@ -555,6 +555,7 @@ vim.cmd([[set ts=4 sw=4]])
 vim.cmd([[colorscheme everforest]])
 vim.cmd([[map gn :bnext<cr>]])
 vim.cmd([[map gp :bprevious<cr>]])
+vim.cmd([[setlocal spell spelllang=en_us,fr]])
 -- vim.opt.expandtab = false
 
 -- vim.opt.swapfile = true
