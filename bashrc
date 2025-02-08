@@ -1,6 +1,5 @@
 export CLICOLOR=1
 
-
 # TIRED OF LOOKING UP COLORS
 RESET="\[\e[0m\]"
 DEF="\[\e[39m\]"
@@ -44,26 +43,9 @@ export TERM=xterm-256color
 export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
-export PATH="/usr/local/bin:${PATH}:~/go/bin:~/.local/bin"
-#/System/Cryptexes/App/usr/bin:/Library/TeX/texbin:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS
-
-setDocker() {
-	if command -v docker-machine &> /dev/null
-	then
-		if (docker-machine ls | grep "default.*Running.*") &> /dev/null ; then
-			export DOCKER_TLS_VERIFY="1"
-			export DOCKER_HOST="tcp://192.168.99.101:2376"
-			export DOCKER_CERT_PATH="/Users/mathieu-danielgariepy/.docker/machine/machines/default"
-			export DOCKER_MACHINE_NAME="default"
-			eval $(docker-machine env) 2&> /dev/null
-		fi
-	fi
-}
-
-(setDocker &)
+export PATH="/usr/local/bin:${PATH}:$HOME/go/bin:$HOME/.local/bin"
 
 # ALIASES
-alias rob="mpv https://www.twitch.tv/rwxrob"
 alias gitlen="git ls-files | xargs wc -l"
 alias ls="ls --color -h"
 alias vi="vim"
@@ -86,7 +68,8 @@ then
 	eval "$(/usr/libexec/path_helper)"
 fi
 
-
-
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+if command -v ng &> /dev/null
+then
+	source <(ng completion script)
+fi
