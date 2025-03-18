@@ -16,15 +16,15 @@ xset mouse 3 3
 xset r rate 200 30
 
 # Set keyboard layout
-setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'
+# setxkbmap -layout 'us,ca' -variant ',fr' -option 'grp:ctrl_alt_toggle,grp_led:num'
 
 # Change keyboar layout with Ctrl + Alt
-setxkbmap -option 'grp:ctrl_alt_toggle'
+# setxkbmap -option 'grp:ctrl_alt_toggle'
 
 # Allow transparancy
 # exec picom -f &
 
-xrandr --output hdmi-0 --mode 1920x1080 --pos 0x0 --rotate normal --rate 119.98 --output dp-0 --primary --mode 3840x2160 --pos 0x1080 --rotate normal --rate 143.99
+# xrandr --output hdmi-0 --mode 1920x1080 --pos 0x0 --rotate normal --rate 119.98 --output dp-0 --primary --mode 3840x2160 --pos 0x1080 --rotate normal --rate 143.99
 
 # Wall paper
 feh --bg-scale "/home/matdan/Pictures/$(ls ~/Pictures | shuf -n 1)"

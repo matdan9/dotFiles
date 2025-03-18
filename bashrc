@@ -43,7 +43,7 @@ export TERM=xterm-256color
 export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
-export PATH="/usr/local/bin:${PATH}:$HOME/go/bin:$HOME/.local/bin"
+export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
 
 # ALIASES
 alias gitlen="git ls-files | xargs wc -l"
