@@ -104,6 +104,17 @@ require('lazy').setup({
     },
   },
 
+  -- AI COMPLETION [CODE COMPANION]
+  'github/copilot.vim',
+  {
+    "olimorris/codecompanion.nvim",
+    config = true,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
+
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -161,14 +172,13 @@ require('lazy').setup({
     },
   },
 
+  -- Theme
   {
-    -- Theme
     "neanias/everforest-nvim",
     version = false,
     lazy = false,
     priority = 1000,
   },
-
   {
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
@@ -407,7 +417,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'java', 'html', 'css' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'java', 'html', 'css', 'markdown' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
@@ -556,7 +566,7 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
+    ['<C-Enter>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_locally_jumpable() then
@@ -580,6 +590,18 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+-- CONFIGURE AI [CODE COMPANION]
+require('codecompanion').setup({
+  strategies = {
+    chat = {
+      adapter = "copilot",
+    },
+    inline = {
+      adapter = "copilot",
+    },
+  },
+})
 
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
