@@ -13,10 +13,10 @@ set $mod Mod4
 
 # Set monitor variables
 set $mainMonitor DP-0
-set $secMonitor HDMI-0
+set $secMonitor DP-1
 
 # Multiple monitors
-exec --no-startup-id xrandr --output DP-0 --primary --mode 3840x2160 --pos 0x1080 --rotate normal --rate 143.99 --output HDMI-0 --mode 1920x1080 --pos 0x0 --rotate normal --rate 119.98 
+exec --no-startup-id xrandr --output DP-0 --primary --mode 3840x2160 --pos 0x1080 --rotate normal --rate 143.99 --output DP-1 --mode 1920x1080 --pos 0x0 --rotate normal --rate 119.98 
 
 # add fonts
 font pango:Hack Nerd Font Mono 12

@@ -108,15 +108,16 @@
     },
     "clock": {
         // "timezone": "America/New_York",
+        "format": "{:%Y-%m-%d | %H:%M}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format-alt": "{:%Y-%m-%d | %H:%M}"
     },
     "cpu": {
         "format": "{usage}% ",
         "tooltip": false
     },
     "memory": {
-        "format": "{}% "
+        "format": "{}% 󰓌"
     },
     "temperature": {
         // "thermal-zone": 2,
@@ -219,7 +220,7 @@
 
     // separate monitors
     "hyprland/window": {
-        "separate-outputs": true,
+        "separate-outputs": true
     },
 
     // hyprland worskapces
@@ -227,5 +228,5 @@
         "format": "{icon}",
         "on-scroll-up": "hyprctl dispatch workspace e+1",
         "on-scroll-down": "hyprctl dispatch workspace e-1"
-    },
+    }
 }
