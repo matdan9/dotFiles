@@ -337,7 +337,7 @@ require("gruvbox").setup({
   palette_overrides = {},
   overrides = {},
   dim_inactive = true,
-  transparent_mode = false,
+  transparent_mode = true,
 })
 
 require('telescope').setup {
@@ -430,65 +430,6 @@ vim.defer_fn(function()
   }
 end, 0)
 
--- [[ Configure LSP ]]
---  This function gets run when an LSP connects to a particular buffer.
-
-local on_attach = function(_, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
-  local nmap = function(keys, func, desc)
-    if desc then
-      desc = 'LSP: ' .. desc
-    end
-
-    vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
-  end
-
-  nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
-  nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-  nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-  nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-  nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-  nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-  nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-
-  -- See `:help K` for why this keymap
-  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
-
-  -- Lesser used LSP functionality
-  nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-  nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-  nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-  nmap('<leader>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, '[W]orkspace [L]ist Folders')
-
-  -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format()
-  end, { desc = 'Format current buffer with LSP' })
-end
-
--- document existing key chains
---[[
-require('which-key').register {
-  ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-  ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-  ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
-  ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-  ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-}
---]]
-
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require('mason').setup()
@@ -512,22 +453,50 @@ require("mason-lspconfig").setup {
   automatic_enable = true,
 }
 
--- local mason_lspconfig = require('mason-lspconfig')
--- 
--- mason_lspconfig.setup {
---   ensure_installed = vim.tbl_keys(servers),
--- }
--- 
--- mason_lspconfig.setup_handlers {
---   function(server_name)
---     require('lspconfig')[server_name].setup {
---       capabilities = capabilities,
---       on_attach = on_attach,
---       -- settings = servers[server_name],
---       -- filetypes = (servers[server_name] or {}).filetypes,
---     }
---   end,
--- }
+local mason_lspconfig = require('mason-lspconfig')
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+  local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then return end
+    local bufnr = args.buf
+    local server_name = client.name
+
+    local nmap = function(keys, func, desc) -- remap keybind function helper
+      if desc then
+        desc = 'LSP: ' .. desc
+      end
+      vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+    end
+
+    nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+    nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+    nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+    nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+    nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+    nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+    nmap('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+    nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+    -- See `:help K` for why this keymap
+    nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+    nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+
+    -- Lesser used LSP functionality
+    nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+    nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+    nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+    nmap('<leader>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, '[W]orkspace [L]ist Folders')
+
+    -- Create a command `:Format` local to the LSP buffer
+    vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+      vim.lsp.buf.format()
+    end, { desc = 'Format current buffer with LSP' })
+  end,
+})
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -590,14 +559,30 @@ require('codecompanion').setup({
   },
 })
 
+-- Function to open diagnostics in a vertical split using location list
+vim.api.nvim_create_user_command("OpenDiagnosticsVSplit", function()
+  -- Populate the location list with diagnostics, but don't open it yet
+  vim.diagnostic.setloclist({ open = false })
+  -- Open a vertical split with the location list (like :lopen but vertical)
+  vim.cmd("vertical lopen")
+end, {})
+
+vim.keymap.set("n", "ge", function()
+  vim.diagnostic.setloclist({ open = false }) -- don't open and focus
+  local window = vim.api.nvim_get_current_win()
+  vim.cmd.lwindow() -- open+focus loclist if has entries, else close -- this is the magic toggle command
+  vim.api.nvim_set_current_win(window) -- restore focus to window you were editing (delete this if you want to stay in loclist)
+end, { buffer = bufnr })
+
+
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
 vim.cmd([[set ts=4 sw=4]])
 vim.cmd([[colorscheme gruvbox]])
 vim.cmd([[map gn :bnext<cr>]])
 vim.cmd([[map gp :bprevious<cr>]])
-vim.cmd([[map ge :lua vim.diagnostic.setloclist()<cr>]])
 vim.cmd([[setlocal spell spelllang=en_us,fr]])
+-- vim.cmd([[map ge :lua vim.diagnostic.setloclist()<cr>]])
 -- vim.opt.expandtab = false
 
 -- vim.opt.swapfile = true
