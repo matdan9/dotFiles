@@ -44,6 +44,7 @@ export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
 export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
+export CMAKE_EXPORT_COMPILE_COMMANDS=1 # makes sure cmake always exports compile commands for clangd
 
 # ALIASES
 alias gitlen="git ls-files | xargs wc -l"
