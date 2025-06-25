@@ -243,6 +243,12 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
+  {
+      "ThePrimeagen/harpoon",
+      branch = "harpoon2",
+      dependencies = { "nvim-lua/plenary.nvim" }
+  },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -336,8 +342,8 @@ require("gruvbox").setup({
   contrast = "", -- can be "hard", "soft" or empty string
   palette_overrides = {},
   overrides = {},
-  dim_inactive = true,
-  transparent_mode = true,
+  dim_inactive = false,
+  transparent_mode = false,
 })
 
 require('telescope').setup {
@@ -558,6 +564,31 @@ require('codecompanion').setup({
     },
   },
 })
+
+-- HARPOON setup
+local harpoon = require("harpoon")
+harpoon:setup()
+
+local harpoon_extensions = require("harpoon.extensions")
+harpoon:extend(harpoon_extensions.builtins.highlight_current_file())
+
+for i = 2, 9 do
+  vim.keymap.set('n', '<leader>' .. i, function() harpoon:list():select(i) end, { desc = 'Harpoon select buffer ' .. i })
+  vim.keymap.set('n', '<leader>d' .. i, function() harpoon:list():remove_at(i) end, { desc = 'Harpoon remove buffer ' .. i })
+  vim.keymap.set('n', '<leader>a' .. i, function() harpoon:list():add(i) end, { desc = 'Harpoon add buffer ' .. i })
+end
+
+
+vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+vim.keymap.set("n", "<leader>fd", function() harpoon:list():clear() end)
+vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<leader>d1", function() harpoon:list():remove_at(1) end)
+vim.keymap.set("n", "<leader>a1", function() harpoon:list():add(1) end)
+
+vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end)
 
 -- Function to open diagnostics in a vertical split using location list
 vim.api.nvim_create_user_command("OpenDiagnosticsVSplit", function()
