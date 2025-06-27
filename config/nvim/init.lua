@@ -606,6 +606,22 @@ vim.keymap.set("n", "ge", function()
 end, { buffer = bufnr })
 
 
+-- map leader ai to codecompanion
+vim.keymap.set('n', '<leader>a', function()
+  require('codecompanion').actions()
+end, { desc = '[A]I actions' })
+
+vim.keymap.set('n', '<leader>ai', function()
+  require('codecompanion').toggle()
+end, { desc = '[A]I [I]nteraction' })
+
+vim.keymap.set('n', '<leader>an', function()
+  require('codecompanion').chat()
+end, { desc = '[A]I [N]ew' })
+
+-- Terminal mode easy escape
+vim.keymap.set('t', '<leader><esc>', '<C-\\><C-N>', t_opts)
+
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
 vim.cmd([[set ts=4 sw=4]])
