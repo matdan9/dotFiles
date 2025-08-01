@@ -44,7 +44,9 @@ export VISUAL="vim"
 export EDITOR="vim"
 export TERMINAL="alacritty"
 export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
+export XDG_DATA_HOME="${HOME}/.local/share:${XDG_DATA_HOME}"
 export CMAKE_EXPORT_COMPILE_COMMANDS=1 # makes sure cmake always exports compile commands for clangd
+export CMAKE_COLOR_DIAGNOSTICS="ON" # enables colored diagnostics in cmake
 
 # ALIASES
 alias gitlen="git ls-files | xargs wc -l"
@@ -53,7 +55,6 @@ alias vi="vim"
 alias less="less -R"
 alias grep="grep --color=always -n"
 alias nv="nvim"
-alias ambient="mpv https://www.youtube.com/watch?v=nRe3xFeyhVY&t=2049s"
 
 # USE VIM KEYBINDS
 set -o vi
