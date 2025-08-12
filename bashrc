@@ -39,12 +39,15 @@ __ps1() {
 PROMPT_COMMAND="__ps1"
 
 # ENV VARIABLE
+if [ -z ${MATDAN_ENV_IS_SETUP} ]; then
+	echo "Setting up PATH, XDG_DATA_HOME"
+	export MATDAN_ENV_IS_SETUP="TRUE"
+	export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
+fi
 export TERM=xterm-256color
-export VISUAL="vim"
-export EDITOR="vim"
+export VISUAL="less"
+export EDITOR="nvim"
 export TERMINAL="alacritty"
-export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
-export XDG_DATA_HOME="${HOME}/.local/share:${XDG_DATA_HOME}"
 export CMAKE_EXPORT_COMPILE_COMMANDS=1 # makes sure cmake always exports compile commands for clangd
 export CMAKE_COLOR_DIAGNOSTICS="ON" # enables colored diagnostics in cmake
 
