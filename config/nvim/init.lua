@@ -244,7 +244,19 @@ require("gruvbox").setup({
 
 -- Telescope config
 require('telescope').setup {
+  picker = {
+    layout_config = {
+        width = 0.6
+    },
+  },
   defaults = {
+    layout_strategy = "vertical",
+    layout_config = {
+      width = 0.95,
+      height = 0.95,
+    },
+    preview_cutoff = 60,
+    preview_width = 0.4,
     mappings = {
       i = {
         ['<C-u>'] = false,
@@ -306,8 +318,8 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+vim.keymap.set('n', '<leader>ss', require('telescope.builtin').lsp_dynamic_workspace_symbols, { desc = '[S]earch [s]ymbols' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -629,6 +641,11 @@ vim.keymap.set('n', '<leader><leader>h', require('smart-splits').swap_buf_left)
 vim.keymap.set('n', '<leader><leader>j', require('smart-splits').swap_buf_down)
 vim.keymap.set('n', '<leader><leader>k', require('smart-splits').swap_buf_up)
 vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
+
+-- format keymap
+vim.keymap.set('n', '<leader>fb', function()
+  vim.lsp.buf.format()
+end, { desc = '[F]ormat current [B]uffer' })
 
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
