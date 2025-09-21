@@ -166,13 +166,6 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-  -- Harpoon to jump between buffers
-  {
-      "ThePrimeagen/harpoon",
-      branch = "harpoon2",
-      dependencies = { "nvim-lua/plenary.nvim" }
-  },
-
   { 'mrjones2014/smart-splits.nvim' }, -- smarter splits (tmux integration)
 
 }, {})
@@ -198,7 +191,6 @@ vim.o.timeoutlen = 300
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
--- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
 -- Keymaps for better default experience
@@ -460,25 +452,6 @@ require('codecompanion').setup({
     },
   },
 })
-
--- HARPOON configuration
-local harpoon = require("harpoon")
-harpoon:setup()
-
-local harpoon_extensions = require("harpoon.extensions")
-harpoon:extend(harpoon_extensions.builtins.highlight_current_file())
-
-for i = 1, 9 do
-  vim.keymap.set('n', '<leader>' .. i, function() harpoon:list():select(i) end, { desc = 'Harpoon select buffer ' .. i })
-  vim.keymap.set('n', '<leader>d' .. i, function() harpoon:list():remove_at(i) end, { desc = 'Harpoon remove buffer ' .. i })
-end
-
-vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end)
-vim.keymap.set("n", "<leader>hd", function() harpoon:list():clear() end)
-vim.keymap.set("n", "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-
-vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end)
-vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end)
 
 -- Function to open diagnostics in a vertical split using location list
 vim.api.nvim_create_user_command("OpenDiagnosticsVSplit", function()
