@@ -636,7 +636,12 @@ vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
 -- buufer keymaps
 vim.keymap.set("n", "<leader>bd", function()
   local buffer_nb = vim.api.nvim_get_current_buf()
-  vim.cmd.bnext()
+  if vim.api.nvim_buf_is_loaded(vim.fn.bufnr("#")) then
+    vim.cmd.buffer("#") -- switch to previous buffer
+  else
+    -- no previous buffer, so open a new empty one first
+    vim.cmd.bprevious()
+  end
   -- check if buffer is open in any other window
   local win_ids = vim.fn.win_findbuf(buffer_nb)
   if #win_ids < 1 then
