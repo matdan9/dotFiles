@@ -242,6 +242,7 @@ require('telescope').setup {
     },
   },
   defaults = {
+    initial_mode = "insert",
     layout_strategy = "vertical",
     layout_config = {
       width = 0.95,
@@ -249,10 +250,24 @@ require('telescope').setup {
     },
     preview_cutoff = 60,
     preview_width = 0.4,
+    -- NOTE: custom path display to show full path in addition to filename
+    -- path_display = function(opts, path)
+    --   local tail = require("telescope.utils").path_tail(path)
+    --   return string.format("%s (%s)", tail, path)
+    -- end,
     mappings = {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+        ['<C-/>'] = require('telescope.actions').which_key,
+        ['<C-c>'] = require('telescope.actions').close,
+      },
+      n = {
+        ['<esc>'] = false, -- don't exit on escape. Sometimes forget I am already in normal mode
+        ['<C-c>'] = require('telescope.actions').close,
+        ['q'] = require('telescope.actions').close,
+        ['bd'] = require('telescope.actions').delete_buffer,
+        ['<C-/>'] = require('telescope.actions').which_key,
       },
     },
   },
@@ -299,7 +314,10 @@ vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader><space>', function()
+  require('telescope.builtin').buffers({ sort_mru = true, })
+end, { desc = '[ ] Find existing buffers'})
+
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -614,6 +632,21 @@ vim.keymap.set('n', '<leader><leader>h', require('smart-splits').swap_buf_left)
 vim.keymap.set('n', '<leader><leader>j', require('smart-splits').swap_buf_down)
 vim.keymap.set('n', '<leader><leader>k', require('smart-splits').swap_buf_up)
 vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
+
+-- buufer keymaps
+vim.keymap.set("n", "<leader>bd", function()
+  local buffer_nb = vim.api.nvim_get_current_buf()
+  vim.cmd.bnext()
+  -- check if buffer is open in any other window
+  local win_ids = vim.fn.win_findbuf(buffer_nb)
+  if #win_ids < 1 then
+    -- did not switch buffer, so open a new one first
+    vim.cmd.bdelete(buffer_nb)
+    vim.cmd.echo('"Buffer deleted"')
+    return
+  end
+  vim.cmd.echo('"Buffer still open in other window, not deleted"')
+end, { desc = '[B]uffer [D]elete' })
 
 -- format keymap
 vim.keymap.set('n', '<leader>fb', function()
