@@ -665,3 +665,8 @@ vim.cmd([[colorscheme gruvbox]])
 vim.cmd([[map gn :bnext<cr>]])
 vim.cmd([[map gp :bprevious<cr>]])
 vim.cmd([[setlocal spell spelllang=en_us,fr]])
+
+-- custom commands
+
+
+vim.api.nvim_create_user_command('Cleanup', '%s/\\s\\+$//e', { nargs = 0 }) -- :W to write
