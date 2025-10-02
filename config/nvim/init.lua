@@ -1,4 +1,4 @@
--- Set <space> as the leader key
+-- Set <space> as the leader keyinit.lua
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -222,12 +222,12 @@ require("gruvbox").setup({
     folds = true,
   },
   strikethrough = true,
-  invert_selection = true,
+  invert_selection = false,
   invert_signs = false,
   invert_tabline = false,
   invert_intend_guides = false,
   inverse = true, -- invert background for search, diffs, statuslines and errors
-  contrast = "", -- can be "hard", "soft" or empty string
+  contrast = "hard", -- can be "hard", "soft" or empty string
   palette_overrides = {},
   overrides = {},
   dim_inactive = false,
@@ -394,7 +394,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- See `:help K` for why this keymap
     nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    nmap('<M-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+    -- nmap('<M-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
     -- Lesser used LSP functionality
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -429,20 +429,22 @@ cmp.setup {
     -- ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
+    -- ['<C-Space>'] = cmp.mapping.complete {},
+    ['<C-Space>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<C-Enter>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
+
+    -- ['<C-Enter>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_next_item()
+    --   elseif luasnip.expand_or_locally_jumpable() then
+    --     luasnip.expand_or_jump()
+    --   else
+    --     fallback()
+    --   end
+    -- end, { 'i', 's' }),
+
     ['<S-Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
@@ -633,7 +635,7 @@ vim.keymap.set('n', '<leader><leader>j', require('smart-splits').swap_buf_down)
 vim.keymap.set('n', '<leader><leader>k', require('smart-splits').swap_buf_up)
 vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
 
--- buufer keymaps
+-- buffer keymaps
 vim.keymap.set("n", "<leader>bd", function()
   local buffer_nb = vim.api.nvim_get_current_buf()
   if vim.api.nvim_buf_is_loaded(vim.fn.bufnr("#")) then
@@ -658,6 +660,15 @@ vim.keymap.set('n', '<leader>fb', function()
   vim.lsp.buf.format()
 end, { desc = '[F]ormat current [B]uffer' })
 
+-- copilot keymaps
+vim.keymap.set('i', '<C-]>', 'copilot#Accept("<CR>")', {
+  expr = true,
+  replace_keycodes = false,
+  silent = true,
+  desc = 'Accept Copilot suggestion',
+})
+vim.g.copilot_no_tab_map = true
+
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
 vim.cmd([[set ts=4 sw=4]])
@@ -667,6 +678,5 @@ vim.cmd([[map gp :bprevious<cr>]])
 vim.cmd([[setlocal spell spelllang=en_us,fr]])
 
 -- custom commands
-
 
 vim.api.nvim_create_user_command('Cleanup', '%s/\\s\\+$//e', { nargs = 0 }) -- :W to write
