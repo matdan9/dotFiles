@@ -619,21 +619,34 @@ require('smart-splits').setup({
   log_level = 'info',
 })
 
-vim.keymap.set('n', '<A-h>', require('smart-splits').resize_left)
-vim.keymap.set('n', '<A-j>', require('smart-splits').resize_down)
-vim.keymap.set('n', '<A-k>', require('smart-splits').resize_up)
-vim.keymap.set('n', '<A-l>', require('smart-splits').resize_right)
+vim.keymap.set({'n', 't'}, '<A-h>', require('smart-splits').resize_left)
+vim.keymap.set({'n', 't'}, '<A-j>', require('smart-splits').resize_down)
+vim.keymap.set({'n', 't'}, '<A-k>', require('smart-splits').resize_up)
+vim.keymap.set({'n', 't'}, '<A-l>', require('smart-splits').resize_right)
 -- moving between splits
-vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
-vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
-vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
-vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
-vim.keymap.set('n', '<C-\\>', require('smart-splits').move_cursor_previous)
+vim.keymap.set({'n', 't'}, '<C-h>', require('smart-splits').move_cursor_left)
+vim.keymap.set({'n', 't'}, '<C-j>', require('smart-splits').move_cursor_down)
+vim.keymap.set({'n', 't'}, '<C-k>', require('smart-splits').move_cursor_up)
+vim.keymap.set({'n', 't'}, '<C-l>', require('smart-splits').move_cursor_right)
+vim.keymap.set({'n', 't'}, '<C-\\>', require('smart-splits').move_cursor_previous)
 -- swapping buffers between windows
-vim.keymap.set('n', '<leader><leader>h', require('smart-splits').swap_buf_left)
-vim.keymap.set('n', '<leader><leader>j', require('smart-splits').swap_buf_down)
-vim.keymap.set('n', '<leader><leader>k', require('smart-splits').swap_buf_up)
-vim.keymap.set('n', '<leader><leader>l', require('smart-splits').swap_buf_right)
+vim.keymap.set({'n', 't'}, '<leader><leader>h', require('smart-splits').swap_buf_left)
+vim.keymap.set({'n', 't'}, '<leader><leader>j', require('smart-splits').swap_buf_down)
+vim.keymap.set({'n', 't'}, '<leader><leader>k', require('smart-splits').swap_buf_up)
+vim.keymap.set({'n', 't'}, '<leader><leader>l', require('smart-splits').swap_buf_right)
+
+-- tab navigation
+vim.keymap.set('n', '<leader>tn', function() vim.cmd.tabnext() end, { desc = 'Go to [T]ab [N]ext' })
+vim.keymap.set('n', '<leader>1', function() vim.cmd.tabn(1) end, { desc = 'Go to tab 1' })
+vim.keymap.set('n', '<leader>2', function() vim.cmd.tabn(2) end, { desc = 'Go to tab 2' })
+vim.keymap.set('n', '<leader>3', function() vim.cmd.tabn(3) end, { desc = 'Go to tab 3' })
+vim.keymap.set('n', '<leader>4', function() vim.cmd.tabn(4) end, { desc = 'Go to tab 4' })
+vim.keymap.set('n', '<leader>5', function() vim.cmd.tabn(5) end, { desc = 'Go to tab 5' })
+vim.keymap.set('n', '<leader>6', function() vim.cmd.tabn(6) end, { desc = 'Go to tab 6' })
+vim.keymap.set('n', '<leader>7', function() vim.cmd.tabn(7) end, { desc = 'Go to tab 7' })
+vim.keymap.set('n', '<leader>8', function() vim.cmd.tabn(8) end, { desc = 'Go to tab 8' })
+vim.keymap.set('n', '<leader>9', function() vim.cmd.tabn(9) end, { desc = 'Go to tab 9' })
+vim.keymap.set('n', '<leader>0', function() vim.cmd.tablast() end, { desc = 'Go to last tab' })
 
 -- buffer keymaps
 vim.keymap.set("n", "<leader>bd", function()
