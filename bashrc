@@ -42,7 +42,7 @@ PROMPT_COMMAND="__ps1"
 if [ -z ${MATDAN_ENV_IS_SETUP} ]; then
 	echo "Setting up PATH, XDG_DATA_HOME"
 	export MATDAN_ENV_IS_SETUP="TRUE"
-	export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
+	export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin:${HOME}/.cargo/bin"
 fi
 export TERM=xterm-256color
 export VISUAL="less"
