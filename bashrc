@@ -45,7 +45,7 @@ if [ -z ${MATDAN_ENV_IS_SETUP} ]; then
 	export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin:${HOME}/.cargo/bin"
 fi
 export TERM=xterm-256color
-export VISUAL="less"
+export VISUAL="nvim"
 export EDITOR="nvim"
 export TERMINAL="alacritty"
 export CMAKE_EXPORT_COMPILE_COMMANDS=1 # makes sure cmake always exports compile commands for clangd
