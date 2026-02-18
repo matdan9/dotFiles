@@ -43,17 +43,6 @@ require('lazy').setup({
     },
   },
 
-  -- AI completion [CODE COMPANION]
-  'github/copilot.vim',
-  {
-    "olimorris/codecompanion.nvim",
-    config = true,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-  },
-
   -- Autocompletion
   {
     'hrsh7th/nvim-cmp',
@@ -462,18 +451,6 @@ cmp.setup {
   },
 }
 
--- CONFIGURE AI CODE COMPANION
-require('codecompanion').setup({
-  strategies = {
-    chat = {
-      adapter = "copilot",
-    },
-    inline = {
-      adapter = "copilot",
-    },
-  },
-})
-
 -- Function to open diagnostics in a vertical split using location list
 vim.api.nvim_create_user_command("OpenDiagnosticsVSplit", function()
   -- Populate the location list with diagnostics, but don't open it yet
@@ -489,72 +466,10 @@ vim.keymap.set("n", "ge", function()
   vim.api.nvim_set_current_win(window) -- restore focus to window you were editing (delete this if you want to stay in loclist)
 end, { buffer = bufnr })
 
--- split navigation using Ctrl-h/j/k/l
--- local savedWindowMode = {}
--- local saveWindowMode = function()
---   -- Save the current window mode (normal, insert, terminal) to a variable
---   local windowId = vim.api.nvim_get_current_win()
---   local mode = vim.api.nvim_get_mode().mode
---   -- check appending at end of a line
---   if (savedWindowMode[windowId] == nil) then
---     savedWindowMode[windowId] = {}
---   end
---   savedWindowMode[windowId] = mode
--- end
--- 
--- local recoverWindowMode = function()
---   -- Recover the window mode from the saved variable
---   local windowId = vim.api.nvim_get_current_win()
---   if not savedWindowMode[windowId] then
---     return
---   end
---   local mode = savedWindowMode[windowId]
---   if not mode then
---     return
---   end
---   if mode == 'n' then
---     vim.cmd.stopinsert()
---     return
---   end
---   if mode == 'i' then
---     vim.cmd.startinsert()
---     return
---   end
---   if mode == 't' then
---     vim.cmd.startinsert()
---     return
---   end
--- end
--- 
--- local modes = { 't', 'n', 'i' }
--- local directions = { 'h', 'j', 'k', 'l' }
--- for i, direction in ipairs(directions) do
---   for j, mode in ipairs(modes) do
---     vim.keymap.set(mode, '<C-' .. direction .. '>', function()
---       saveWindowMode()
---       vim.cmd.wincmd(direction)
---       recoverWindowMode()
---     end, { desc = 'Move to ' .. (direction == 'h' and 'left' or direction == 'j' and 'below' or direction == 'k' and 'above' or 'right') .. ' window' })
---   end
--- end
-
 -- tabs
 vim.keymap.set('n', '<C-w>c', function()
   vim.cmd.tabnew()
 end)
-
--- map leader ai to codecompanion
-vim.keymap.set('n', '<leader>a', function()
-  require('codecompanion').actions()
-end, { desc = '[A]I actions' })
-
-vim.keymap.set('n', '<leader>ai', function()
-  require('codecompanion').toggle()
-end, { desc = '[A]I [I]nteraction' })
-
-vim.keymap.set('n', '<leader>an', function()
-  require('codecompanion').chat()
-end, { desc = '[A]I [N]ew' })
 
 -- Terminal config
 vim.keymap.set('t', '<C-w>[', '<C-\\><C-N>') -- exit terminal mode with Ctrl-w [ (reminiscent of tmux)
@@ -669,10 +584,7 @@ vim.keymap.set("n", "<leader>bd", function()
   vim.cmd.echo('"Buffer still open in other window, not deleted"')
 end, { desc = '[B]uffer [D]elete' })
 
--- format keymap
-vim.keymap.set('n', '<leader>fb', function()
-  vim.lsp.buf.format()
-end, { desc = '[F]ormat current [B]uffer' })
+vim.keymap.set({'n', 'v'}, '<leader>fb', ':lua vim.lsp.buf.format()<CR>', { desc = '[F]ormat visual [B]uffer' })
 
 -- copilot keymaps
 vim.keymap.set('i', '<C-]>', 'copilot#Accept("<CR>")', {
@@ -692,5 +604,4 @@ vim.cmd([[map gp :bprevious<cr>]])
 vim.cmd([[setlocal spell spelllang=en_us,fr]])
 
 -- custom commands
-
 vim.api.nvim_create_user_command('Cleanup', '%s/\\s\\+$//e', { nargs = 0 }) -- :W to write
