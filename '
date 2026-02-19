@@ -66,35 +66,11 @@ require('lazy').setup({
   },
 
   -- AI
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    build = ":Copilot auth",
-    event = "BufReadPost",
-    opts = {
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        hide_during_completion = true,
-        debounce = 15,
-        trigger_on_accept = true,
-        keymap = {
-          accept = "<C-]>",
-          accept_word = false,
-          accept_line = false,
-          next = "<M-]>",
-          prev = "<M-[>",
-          dismiss = false,
-          toggle_auto_trigger = false,
-        },
-      },
-      panel = { enabled = false },
-      filetypes = {
-        markdown = true,
-        help = true,
-      },
+  use { "zbirenbaum/copilot.lua" 
+    requires = {
+      "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
     },
-  },
+  }
 
   -- Useful plugin to show you pending keybinds.
   -- { 'folke/which-key.nvim', opts = {} },
@@ -721,13 +697,13 @@ vim.keymap.set({'n', 'v'}, '<leader>fb', ':lua vim.lsp.buf.format()<CR>', { desc
 
 
 -- copilot keymaps
--- vim.keymap.set('i', '<C-]>', 'copilot#Accept("<CR>")', {
---   expr = true,
---   replace_keycodes = false,
---   silent = true,
---   desc = 'Accept Copilot suggestion',
--- })
--- vim.g.copilot_no_tab_map = true
+vim.keymap.set('i', '<C-]>', 'copilot#Accept("<CR>")', {
+  expr = true,
+  replace_keycodes = false,
+  silent = true,
+  desc = 'Accept Copilot suggestion',
+})
+vim.g.copilot_no_tab_map = true
 
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
