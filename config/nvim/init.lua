@@ -95,6 +95,28 @@ require('lazy').setup({
       },
     },
   },
+  {
+    "sudo-tee/opencode.nvim",
+    config = function()
+      require("opencode").setup({})
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = {
+          anti_conceal = { enabled = false },
+          file_types = { 'markdown', 'opencode_output' },
+        },
+        ft = { 'markdown', 'Avante', 'copilot-chat', 'opencode_output' },
+      },
+      -- Optional, for file mentions and commands completion, pick only one
+      'hrsh7th/nvim-cmp',
+
+      -- Optional, for file mentions picker, pick only one
+      'nvim-telescope/telescope.nvim',
+    },
+  },
 
   -- Useful plugin to show you pending keybinds.
   -- { 'folke/which-key.nvim', opts = {} },
@@ -307,6 +329,26 @@ require('lazy').setup({
   },
 
   { 'mrjones2014/smart-splits.nvim' }, -- smarter splits (tmux integration)
+
+  -- finding keybinds
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+    keys = {
+      {
+        "<leader>?",
+        function()
+          require("which-key").show({ global = false })
+        end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
+  }
 
 }, {})
 
