@@ -65,6 +65,11 @@ require('lazy').setup({
     },
   },
 
+  -- motions
+  {
+    'justinmk/vim-sneak',
+  },
+
   -- AI
   {
     "zbirenbaum/copilot.lua",
@@ -316,17 +321,6 @@ require('lazy').setup({
         end,
       })
     end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = "BufRead",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      event = "BufRead",
-    },
-    opts = {
-      multiwindow = true,
-    },
   },
 
   { 'mrjones2014/smart-splits.nvim' }, -- smarter splits (tmux integration)
