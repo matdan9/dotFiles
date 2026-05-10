@@ -1,15 +1,34 @@
--- Set <space> as the leader keyinit.lua
+-- General vim settings
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
 vim.opt.guicursor = ""
-
 vim.opt.nu = true
 vim.opt.relativenumber = true
-
 vim.opt.smartindent = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+
+-- Set search settings
+vim.o.hlsearch = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+
+-- Make line numbers default
+vim.wo.number = true
+
+vim.o.mouse = ''
+vim.o.breakindent = false
+vim.o.undofile = true
+vim.wo.signcolumn = 'yes'
+
+-- Decrease update time
+vim.o.updatetime = 250
+vim.o.timeoutlen = 300
+
+-- Set completeopt to have a better completion experience
+vim.o.completeopt = 'menuone,noselect'
+
+vim.o.termguicolors = true
 
 -- automatically get lazy if not installed
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -27,9 +46,8 @@ vim.opt.rtp:prepend(lazypath)
 
 -- getting plugins using lazy
 require('lazy').setup({
-  -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+
+  { 'nvim-mini/mini.nvim', version = false },
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -49,25 +67,6 @@ require('lazy').setup({
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!).
     build = "make install_jsregexp"
-  },
-
-  -- Autocompletion
-  {
-    'hrsh7th/nvim-cmp',
-    dependencies = {
-      -- Snippet Engine & its associated nvim-cmp source
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      -- Adds LSP completion capabilities
-      'hrsh7th/cmp-nvim-lsp',
-      -- Adds a number of user-friendly snippets
-      'rafamadriz/friendly-snippets',
-    },
-  },
-
-  -- motions
-  {
-    'justinmk/vim-sneak',
   },
 
   -- AI
@@ -104,7 +103,9 @@ require('lazy').setup({
   {
     "sudo-tee/opencode.nvim",
     config = function()
-      require("opencode").setup({})
+      require("opencode").setup({
+        preferred_completion = 'vim_complete',
+      })
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -116,52 +117,8 @@ require('lazy').setup({
         },
         ft = { 'Avante', 'copilot-chat', 'opencode_output' },
       },
-      -- Optional, for file mentions and commands completion, pick only one
-      'hrsh7th/nvim-cmp',
-
       -- Optional, for file mentions picker, pick only one
       'nvim-telescope/telescope.nvim',
-    },
-  },
-
-  -- Useful plugin to show you pending keybinds.
-  -- { 'folke/which-key.nvim', opts = {} },
-  {
-    -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      -- See `:help gitsigns.txt`
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-      on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
-
-        -- don't override the built-in and fugitive keymaps
-        local gs = package.loaded.gitsigns
-        vim.keymap.set({ 'n', 'v' }, ']c', function()
-          if vim.wo.diff then
-            return ']c'
-          end
-          vim.schedule(function()
-            gs.next_hunk()
-          end)
-          return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
-        vim.keymap.set({ 'n', 'v' }, '[c', function()
-          if vim.wo.diff then
-            return '[c'
-          end
-          vim.schedule(function()
-            gs.prev_hunk()
-          end)
-          return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
-      end,
     },
   },
 
@@ -222,38 +179,17 @@ require('lazy').setup({
     opts = {
       -- custom handling of parsers
       ensure_installed = {
-        "comment",
+        "regex", "diff", "comment", "markdown", "markdown_inline", "tsx",
         "bash",
-        "c",
-        "css",
-        "diff",
-        "go",
-        "gomod",
-        "gowork",
-        "gosum",
-        "html",
-        "javascript",
-        "typescript",
-        "jsdoc",
-        "json",
-        "lua",
-        "luadoc",
-        "luap",
-        "markdown",
-        "markdown_inline",
-        "query",
-        "regex",
-        "toml",
-        "tsx",
-        "vim",
-        "vimdoc",
-        "yaml",
-        "sql",
-        "cpp",
+        "c", "rust", "cpp", "glsl",
+        "css", "html",
+        "go", "gomod", "gowork", "gosum",
+        "javascript", "typescript", "jsdoc",
+        "lua", "luadoc", "luap",
+        "toml", "json", "yaml",
+        "vim", "vimdoc",
+        "sql", "query",
         "python",
-        "sql",
-        "rust",
-        "glsl",
       },
     },
     config = function(_, opts)
@@ -347,28 +283,46 @@ require('lazy').setup({
 
 }, {})
 
--- Set search settings
-vim.o.hlsearch = true
-vim.o.ignorecase = true
-vim.o.smartcase = true
+-- MINI module activations
+require('mini.icons').setup() -- required for mini-completion
+require('mini.snippets').setup() -- required for mini-completion
+require('mini.completion').setup() -- auto complete (C-Space / C-n / A-Space)
+require('mini.diff').setup() -- better diffview for git
+require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
+require('mini.clue').setup({ -- show possible keybinds after pressing a trigger key
+  triggers = {
+    -- Leader triggers
+    { mode = { 'n', 'x' }, keys = '<Leader>' },
+    -- `[` and `]` keys
+    { mode = 'n', keys = '[' },
+    { mode = 'n', keys = ']' },
+    -- Built-in completion
+    { mode = 'i', keys = '<C-x>' },
+    -- `g` key
+    { mode = { 'n', 'x' }, keys = 'g' },
+    -- Marks
+    { mode = { 'n', 'x' }, keys = "'" },
+    { mode = { 'n', 'x' }, keys = '`' },
+    -- Registers
+    { mode = { 'n', 'x' }, keys = '"' },
+    { mode = { 'i', 'c' }, keys = '<C-r>' },
+    -- Window commands
+    { mode = 'n', keys = '<C-w>' },
+    -- `z` key
+    { mode = { 'n', 'x' }, keys = 'z' },
+  },
+  clues = {
+    -- Enhance this by adding descriptions for <Leader> mapping groups
+    miniclue.gen_clues.square_brackets(),
+    miniclue.gen_clues.builtin_completion(),
+    miniclue.gen_clues.g(),
+    miniclue.gen_clues.marks(),
+    miniclue.gen_clues.registers(),
+    miniclue.gen_clues.windows(),
+    miniclue.gen_clues.z(),
+  },
+})
 
--- Make line numbers default
-vim.wo.number = true
-
-vim.o.mouse = ''
-vim.o.breakindent = false
-vim.o.undofile = true
-
-vim.wo.signcolumn = 'yes'
-
--- Decrease update time
-vim.o.updatetime = 250
-vim.o.timeoutlen = 300
-
--- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
-
-vim.o.termguicolors = true
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -518,10 +472,6 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 require('mason').setup()
 require('mason-lspconfig').setup()
 
--- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-
 -- Ensure the servers above are installed
 require("mason-lspconfig").setup {
   automatic_enable = true,
@@ -569,56 +519,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, { desc = 'Format current buffer with LSP' })
   end,
 })
-
--- Configure nvim-cmp
-local cmp = require 'cmp'
-local luasnip = require 'luasnip'
-require('luasnip.loaders.from_vscode').lazy_load()
-luasnip.config.setup {}
-
-cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert {
-	-- TODO should i bring those back (collision with tmux C-n C-p
-    -- ['<C-n>'] = cmp.mapping.select_next_item(),
-    -- ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    -- ['<C-Space>'] = cmp.mapping.complete {},
-    ['<C-Space>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-
-    -- ['<C-Enter>'] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     cmp.select_next_item()
-    --   elseif luasnip.expand_or_locally_jumpable() then
-    --     luasnip.expand_or_jump()
-    --   else
-    --     fallback()
-    --   end
-    -- end, { 'i', 's' }),
-
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  },
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  },
-}
 
 -- Function to open diagnostics in a vertical split using location list
 vim.api.nvim_create_user_command("OpenDiagnosticsVSplit", function()
@@ -673,6 +573,35 @@ vim.api.nvim_create_autocmd('BufEnter', {
   end
 })
 
+-- make nvim follow cwd of terminal
+vim.api.nvim_create_autocmd({'BufEnter', 'TermEnter', 'TermLeave'}, {
+  desc = "cd to cwd on enter",
+  pattern = "term://*",
+  callback = function(args)
+    local cwd = vim.fn.resolve('/proc/' .. vim.b.terminal_job_pid .. '/cwd')
+    if vim.fn.isdirectory(cwd) == 0 then return end
+    vim.fn.chdir(cwd)
+  end,
+})
+-- :help terminal-ocs7 handle OSC 7 dir change requests from terminal (e.g. when using zoxide or autojump)
+vim.api.nvim_create_autocmd({ 'TermRequest' }, {
+  desc = 'Handles OSC 7 dir change requests',
+  callback = function(ev)
+    local val, n = string.gsub(ev.data.sequence, '\027]7;file://[^/]*', '')
+    if n < 1 then return end
+    -- OSC 7: dir-change
+    local dir = val
+    if vim.fn.isdirectory(dir) == 0 then
+      vim.notify('invalid dir: '..dir)
+      return
+    end
+    vim.b[ev.buf].osc7_dir = dir
+    if vim.api.nvim_get_current_buf() == ev.buf then
+      vim.cmd.lcd(dir)
+    end
+  end
+})
+
 -- smart-split config
 require('smart-splits').setup({
   -- Ignored buffer types (only while resizing)
@@ -715,10 +644,10 @@ vim.keymap.set({'n', 't'}, '<C-k>', require('smart-splits').move_cursor_up)
 vim.keymap.set({'n', 't'}, '<C-l>', require('smart-splits').move_cursor_right)
 vim.keymap.set({'n', 't'}, '<C-\\>', require('smart-splits').move_cursor_previous)
 -- swapping buffers between windows
-vim.keymap.set({'n', 't'}, '<leader><leader>h', require('smart-splits').swap_buf_left)
-vim.keymap.set({'n', 't'}, '<leader><leader>j', require('smart-splits').swap_buf_down)
-vim.keymap.set({'n', 't'}, '<leader><leader>k', require('smart-splits').swap_buf_up)
-vim.keymap.set({'n', 't'}, '<leader><leader>l', require('smart-splits').swap_buf_right)
+vim.keymap.set({'n'}, '<leader><leader>h', require('smart-splits').swap_buf_left)
+vim.keymap.set({'n'}, '<leader><leader>j', require('smart-splits').swap_buf_down)
+vim.keymap.set({'n'}, '<leader><leader>k', require('smart-splits').swap_buf_up)
+vim.keymap.set({'n'}, '<leader><leader>l', require('smart-splits').swap_buf_right)
 
 -- tab navigation
 vim.keymap.set('n', '<leader>tn', function() vim.cmd.tabnext() end, { desc = 'Go to [T]ab [N]ext' })
@@ -756,16 +685,6 @@ end, { desc = '[B]uffer [D]elete' })
 
 vim.keymap.set({'n', 'v'}, '<leader>fb', ':lua vim.lsp.buf.format()<CR>', { desc = '[F]ormat visual [B]uffer' })
 
-
--- copilot keymaps
--- vim.keymap.set('i', '<C-]>', 'copilot#Accept("<CR>")', {
---   expr = true,
---   replace_keycodes = false,
---   silent = true,
---   desc = 'Accept Copilot suggestion',
--- })
--- vim.g.copilot_no_tab_map = true
-
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
 vim.cmd([[set ts=4 sw=4]])
@@ -777,4 +696,7 @@ vim.cmd([[setlocal spell spelllang=en_us]])
 -- vim.cmd([[inoremap <C-E> <C-N>]])
 
 -- custom commands
-vim.api.nvim_create_user_command('Cleanup', '%s/\\s\\+$//e', { nargs = 0 }) -- :W to write
+vim.api.nvim_create_user_command('Cleanup', '%s/\\s\\+$//e', { nargs = 0 }) -- :Cleanup trim the trailing white spaces
+vim.api.nvim_create_user_command('Table', ":!column -t -s '|' -o '|'<CR>", { nargs = 0 }) -- :Table to format markdown tables
+vim.api.nvim_create_user_command('Diff', 'lua MiniDiff.toggle_overlay()<CR>', { nargs = 0 }) -- :Diff to toggle git diff view
+
