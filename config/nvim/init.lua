@@ -135,32 +135,13 @@ require('lazy').setup({
     config = true,
   },
 
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = true,
-        theme = 'gruvbox',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
-
   -- Fuzzy Finder (files, lsp, etc)
   {
     'nvim-telescope/telescope.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-      -- Only load if `make` is available. Make sure you have the system
-      -- requirements installed.
       {
         'nvim-telescope/telescope-fzf-native.nvim',
-        -- NOTE: If you are having trouble with this installation,
-        --       refer to the README for telescope-fzf-native for more instructions.
         build = 'make',
         cond = function()
           return vim.fn.executable 'make' == 1
@@ -261,35 +242,18 @@ require('lazy').setup({
 
   { 'mrjones2014/smart-splits.nvim' }, -- smarter splits (tmux integration)
 
-  -- finding keybinds
-  {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
-    keys = {
-      {
-        "<leader>?",
-        function()
-          require("which-key").show({ global = false })
-        end,
-        desc = "Buffer Local Keymaps (which-key)",
-      },
-    },
-  }
-
 }, {})
 
 -- MINI module activations
+require('mini.statusline').setup() -- better statusline
 require('mini.icons').setup() -- required for mini-completion
 require('mini.snippets').setup() -- required for mini-completion
 require('mini.completion').setup() -- auto complete (C-Space / C-n / A-Space)
-require('mini.diff').setup() -- better diffview for git
+require('mini.diff').setup({ view = { style = 'sign', },}) -- better diffview for git
 require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
-require('mini.clue').setup({ -- show possible keybinds after pressing a trigger key
+require('mini.files').setup({ mappings = { close = '<C-c>' } }) -- file explorer (':h MiniFile' '<leader>e' to open '=' to sync buff with FS)
+miniclue = require('mini.clue') -- Shows keybinds. Window will pop after 1 sec of a keybind started but no ended eg: <leader>, <">. <C-d> <C-u> to scroll in clue
+miniclue.setup({ -- show possible keybinds after pressing a trigger key
   triggers = {
     -- Leader triggers
     { mode = { 'n', 'x' }, keys = '<Leader>' },
@@ -444,17 +408,12 @@ end
 vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 
 -- See `:help telescope.builtin`
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', function()
   require('telescope.builtin').buffers({ sort_mru = true, })
 end, { desc = '[ ] Find existing buffers'})
 
 vim.keymap.set('n', '<leader>/', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
-  })
+  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>ff', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
@@ -473,9 +432,7 @@ require('mason').setup()
 require('mason-lspconfig').setup()
 
 -- Ensure the servers above are installed
-require("mason-lspconfig").setup {
-  automatic_enable = true,
-}
+require("mason-lspconfig").setup { automatic_enable = true, }
 
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
@@ -493,7 +450,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
     nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
     nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
     nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
     nmap('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
@@ -503,7 +459,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- See `:help K` for why this keymap
     nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    -- nmap('<M-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
     -- Lesser used LSP functionality
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -519,14 +474,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, { desc = 'Format current buffer with LSP' })
   end,
 })
-
--- Function to open diagnostics in a vertical split using location list
-vim.api.nvim_create_user_command("OpenDiagnosticsVSplit", function()
-  -- Populate the location list with diagnostics, but don't open it yet
-  vim.diagnostic.setloclist({ open = false })
-  -- Open a vertical split with the location list (like :lopen but vertical)
-  vim.cmd("vertical lopen")
-end, {})
 
 vim.keymap.set("n", "ge", function()
   vim.diagnostic.setloclist({ open = false }) -- don't open and focus
@@ -562,6 +509,7 @@ vim.keymap.set('n', '<leader>vt', function() -- open terminal in new vertical wi
   vim.api.nvim_feedkeys('i', 'n', false) -- enter insert mode in terminal
 end)
 
+-- remove line numbers from terminal buffers
 vim.api.nvim_create_autocmd('BufEnter', {
   group = vim.api.nvim_create_augroup("term-start", { clear = true }),
   callback = function()
@@ -661,6 +609,9 @@ vim.keymap.set('n', '<leader>7', function() vim.cmd.tabn(7) end, { desc = 'Go to
 vim.keymap.set('n', '<leader>8', function() vim.cmd.tabn(8) end, { desc = 'Go to tab 8' })
 vim.keymap.set('n', '<leader>9', function() vim.cmd.tabn(9) end, { desc = 'Go to tab 9' })
 vim.keymap.set('n', '<leader>0', function() vim.cmd.tablast() end, { desc = 'Go to last tab' })
+
+-- open file explorer
+vim.keymap.set('n', '<leader>e', ':lua MiniFiles.open()<CR>', { desc = '[E]xplorer' })
 
 -- buffer keymaps
 vim.keymap.set("n", "<leader>bd", function()
