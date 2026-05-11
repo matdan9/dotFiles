@@ -61,14 +61,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    "L3MON4D3/LuaSnip",
-    -- follow latest release.
-    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-    -- install jsregexp (optional!).
-    build = "make install_jsregexp"
-  },
-
   -- AI
   {
     "zbirenbaum/copilot.lua",
@@ -242,14 +234,47 @@ require('lazy').setup({
 
   { 'mrjones2014/smart-splits.nvim' }, -- smarter splits (tmux integration)
 
+  {
+    -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      -- See `:help gitsigns.txt`
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+      on_attach = function(bufnr)
+        vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
+        -- don't override the built-in and fugitive keymaps
+        local gs = package.loaded.gitsigns
+        vim.keymap.set({ 'n', 'v' }, ']h', function() gs.next_hunk() end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
+        vim.keymap.set({ 'n', 'v' }, '[h', function() gs.prev_hunk() end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
+      end,
+    },
+  },
+
 }, {})
 
 -- MINI module activations
+require('mini.bracketed').setup({ -- combine '[' or ']' for motion
+  -- Disable <Space> suffix to avoid mini.clue intercepting <leader><Space>
+  -- (mini.bracketed maps [<Space>/]<Space> for blank line jumps by default)
+  blankline = { suffix = '' },
+}) 
+require('mini.jump2d').setup({
+  mappings = {
+    start_jumping = 's',
+  },
+})
+require('mini.misc').setup() -- mostly used for the zoom feature
+require('mini.ai').setup() -- better statusline
 require('mini.statusline').setup() -- better statusline
 require('mini.icons').setup() -- required for mini-completion
 require('mini.snippets').setup() -- required for mini-completion
 require('mini.completion').setup() -- auto complete (C-Space / C-n / A-Space)
-require('mini.diff').setup({ view = { style = 'sign', },}) -- better diffview for git
 require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
 require('mini.files').setup({ mappings = { close = '<C-c>' } }) -- file explorer (':h MiniFile' '<leader>e' to open '=' to sync buff with FS)
 miniclue = require('mini.clue') -- Shows keybinds. Window will pop after 1 sec of a keybind started but no ended eg: <leader>, <">. <C-d> <C-u> to scroll in clue
@@ -287,6 +312,7 @@ miniclue.setup({ -- show possible keybinds after pressing a trigger key
   },
 })
 
+vim.keymap.set({'n', 't'}, '<C-w>z', ':vertical resize<CR>:resize<CR>', { desc = 'Zoom window' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -328,6 +354,7 @@ require("gruvbox").setup({
   dim_inactive = false,
   transparent_mode = false,
 })
+
 
 -- Telescope config
 require('telescope').setup {
@@ -411,6 +438,10 @@ vim.api.nvim_create_user_command('LiveGrepGitRoot', live_grep_git_root, {})
 vim.keymap.set('n', '<leader><space>', function()
   require('telescope.builtin').buffers({ sort_mru = true, })
 end, { desc = '[ ] Find existing buffers'})
+
+vim.keymap.set('n', '<leader>ft', function()
+  require('telescope.builtin').buffers({ sort_mru = true, cwd = "term://" })
+end, { desc = '[F]ind existing [T]erminals'})
 
 vim.keymap.set('n', '<leader>/', function()
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { })
@@ -634,12 +665,22 @@ vim.keymap.set("n", "<leader>bd", function()
 end, { desc = '[B]uffer [D]elete' })
 
 
-vim.keymap.set({'n', 'v'}, '<leader>fb', ':lua vim.lsp.buf.format()<CR>', { desc = '[F]ormat visual [B]uffer' })
+-- NOTE: if not working with visual selection, the LSP/formatter isn't supporting rage formatting
+vim.keymap.set({'n', 'x'}, '<leader>fb', function() vim.lsp.buf.format() end, { desc = '[F]ormat visual [B]uffer' })
+
+-- fix floating window not having the same background as normal windows
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+    vim.api.nvim_set_hl(0, "NormalFloat", { fg = normal.fg, bg = normal.bg, })
+  end,
+})
+-- set the color scheme
+vim.cmd.colorscheme("gruvbox")
 
 vim.o.background = "dark"
 vim.cmd([[set background=dark]])
 vim.cmd([[set ts=4 sw=4]])
-vim.cmd([[colorscheme gruvbox]])
 vim.cmd([[map gn :bnext<cr>]])
 vim.cmd([[map gp :bprevious<cr>]])
 vim.cmd([[setlocal spell spelllang=en_us]])
