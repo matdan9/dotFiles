@@ -666,7 +666,7 @@ end, { desc = '[B]uffer [D]elete' })
 
 
 -- NOTE: if not working with visual selection, the LSP/formatter isn't supporting rage formatting
-vim.keymap.set({'n', 'x'}, '<leader>fb', function() vim.lsp.buf.format() end, { desc = '[F]ormat visual [B]uffer' })
+vim.keymap.set({'n', 'v'}, '<leader>fb', function() vim.lsp.buf.format() end, { desc = '[F]ormat visual [B]uffer' })
 
 -- fix floating window not having the same background as normal windows
 vim.api.nvim_create_autocmd("ColorScheme", {
