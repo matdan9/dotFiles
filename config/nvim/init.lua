@@ -277,40 +277,40 @@ require('mini.snippets').setup() -- required for mini-completion
 require('mini.completion').setup() -- auto complete (C-Space / C-n / A-Space)
 require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
 require('mini.files').setup({ mappings = { close = '<C-c>' } }) -- file explorer (':h MiniFile' '<leader>e' to open '=' to sync buff with FS)
-miniclue = require('mini.clue') -- Shows keybinds. Window will pop after 1 sec of a keybind started but no ended eg: <leader>, <">. <C-d> <C-u> to scroll in clue
-miniclue.setup({ -- show possible keybinds after pressing a trigger key
-  triggers = {
-    -- Leader triggers
-    { mode = { 'n', 'x' }, keys = '<Leader>' },
-    -- `[` and `]` keys
-    { mode = 'n', keys = '[' },
-    { mode = 'n', keys = ']' },
-    -- Built-in completion
-    { mode = 'i', keys = '<C-x>' },
-    -- `g` key
-    { mode = { 'n', 'x' }, keys = 'g' },
-    -- Marks
-    { mode = { 'n', 'x' }, keys = "'" },
-    { mode = { 'n', 'x' }, keys = '`' },
-    -- Registers
-    { mode = { 'n', 'x' }, keys = '"' },
-    { mode = { 'i', 'c' }, keys = '<C-r>' },
-    -- Window commands
-    { mode = 'n', keys = '<C-w>' },
-    -- `z` key
-    { mode = { 'n', 'x' }, keys = 'z' },
-  },
-  clues = {
-    -- Enhance this by adding descriptions for <Leader> mapping groups
-    miniclue.gen_clues.square_brackets(),
-    miniclue.gen_clues.builtin_completion(),
-    miniclue.gen_clues.g(),
-    miniclue.gen_clues.marks(),
-    miniclue.gen_clues.registers(),
-    miniclue.gen_clues.windows(),
-    miniclue.gen_clues.z(),
-  },
-})
+-- miniclue = require('mini.clue') -- Shows keybinds. Window will pop after 1 sec of a keybind started but no ended eg: <leader>, <">. <C-d> <C-u> to scroll in clue
+-- miniclue.setup({ -- show possible keybinds after pressing a trigger key
+--   triggers = {
+--     -- Leader triggers
+--     { mode = { 'n', 'x' }, keys = '<Leader>' },
+--     -- `[` and `]` keys
+--     { mode = 'n', keys = '[' },
+--     { mode = 'n', keys = ']' },
+--     -- Built-in completion
+--     { mode = 'i', keys = '<C-x>' },
+--     -- `g` key
+--     { mode = { 'n', 'x' }, keys = 'g' },
+--     -- Marks
+--     { mode = { 'n', 'x' }, keys = "'" },
+--     { mode = { 'n', 'x' }, keys = '`' },
+--     -- Registers
+--     { mode = { 'n', 'x' }, keys = '"' },
+--     { mode = { 'i', 'c' }, keys = '<C-r>' },
+--     -- Window commands
+--     { mode = 'n', keys = '<C-w>' },
+--     -- `z` key
+--     { mode = { 'n', 'x' }, keys = 'z' },
+--   },
+--   clues = {
+--     -- Enhance this by adding descriptions for <Leader> mapping groups
+--     miniclue.gen_clues.square_brackets(),
+--     miniclue.gen_clues.builtin_completion(),
+--     miniclue.gen_clues.g(),
+--     miniclue.gen_clues.marks(),
+--     miniclue.gen_clues.registers(),
+--     miniclue.gen_clues.windows(),
+--     miniclue.gen_clues.z(),
+--   },
+-- })
 
 vim.keymap.set({'n', 't'}, '<C-w>z', ':vertical resize<CR>:resize<CR>', { desc = 'Zoom window' })
 
