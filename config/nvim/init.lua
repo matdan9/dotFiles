@@ -26,7 +26,7 @@ vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
+vim.o.completeopt = 'menuone,noinsert'
 
 vim.o.termguicolors = true
 
@@ -125,6 +125,14 @@ require('lazy').setup({
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
     config = true,
+  },
+
+  -- harpoon
+  {
+    'ThePrimeagen/harpoon',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
   },
 
   -- Fuzzy Finder (files, lsp, etc)
@@ -269,12 +277,14 @@ require('mini.jump2d').setup({
     start_jumping = 's',
   },
 })
+
 require('mini.misc').setup() -- mostly used for the zoom feature
-require('mini.ai').setup() -- better statusline
+-- require('mini.ai').setup() -- better statusline
 require('mini.statusline').setup() -- better statusline
 require('mini.icons').setup() -- required for mini-completion
 require('mini.snippets').setup() -- required for mini-completion
-require('mini.completion').setup() -- auto complete (C-Space / C-n / A-Space)
+require('mini.completion').setup() -- auto complete (A-Space / C-n to trigger, C-Space to confirm)
+vim.keymap.set('i', '<C-Space>', '<C-y>', { desc = 'Confirm completion selection' })
 require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
 require('mini.files').setup({ mappings = { close = '<C-c>' } }) -- file explorer (':h MiniFile' '<leader>e' to open '=' to sync buff with FS)
 -- miniclue = require('mini.clue') -- Shows keybinds. Window will pop after 1 sec of a keybind started but no ended eg: <leader>, <">. <C-d> <C-u> to scroll in clue
@@ -395,6 +405,24 @@ require('telescope').setup {
   },
 }
 
+-- HARPOON CONFIG
+-- general harpoon keymaps
+vim.keymap.set('n', '<leader>ha', function() require("harpoon.mark").add_file() end, { desc = '[H]arpoon [A]dd file' })
+vim.keymap.set('n', '<leader>hh', function() require("harpoon.ui").toggle_quick_menu() end, { desc = '[H]arpoon [H]ome' })
+-- harpoon naf file
+vim.keymap.set({'n', 't'}, '<M-1>', function() require("harpoon.ui").nav_file(1) end, { desc = 'Harpoon file 1' })
+vim.keymap.set({'n', 't'}, '<M-2>', function() require("harpoon.ui").nav_file(2) end, { desc = 'Harpoon file 2' })
+vim.keymap.set({'n', 't'}, '<M-3>', function() require("harpoon.ui").nav_file(3) end, { desc = 'Harpoon file 3' })
+vim.keymap.set({'n', 't'}, '<M-4>', function() require("harpoon.ui").nav_file(4) end, { desc = 'Harpoon file 4' })
+vim.keymap.set({'n', 't'}, '<M-5>', function() require("harpoon.ui").nav_file(5) end, { desc = 'Harpoon file 5' })
+-- harpoon terminal keymaps
+vim.keymap.set({'n', 't'}, '<M-0>', function() require("harpoon.term").gotoTerminal(1) end, { desc = 'Harpoon terminal 1' })
+vim.keymap.set({'n', 't'}, '<M-9>', function() require("harpoon.term").gotoTerminal(2) end, { desc = 'Harpoon terminal 2' })
+vim.keymap.set({'n', 't'}, '<M-8>', function() require("harpoon.term").gotoTerminal(3) end, { desc = 'Harpoon terminal 3' })
+vim.keymap.set({'n', 't'}, '<M-7>', function() require("harpoon.term").gotoTerminal(4) end, { desc = 'Harpoon terminal 4' })
+vim.keymap.set({'n', 't'}, '<M-6>', function() require("harpoon.term").gotoTerminal(5) end, { desc = 'Harpoon terminal 5' })
+
+
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
@@ -455,6 +483,8 @@ vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>?', require('telescope.builtin').keymaps, { desc = 'Keymaps' })
+vim.keymap.set('n', '<leader>fq', require('telescope.builtin').quickfix, { desc = '[F]ind [Q]uickfix' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 
 -- mason-lspconfig requires that these setup functions are called in this order
