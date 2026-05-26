@@ -238,7 +238,7 @@ hl.config({
         kb_layout  = "us,ca",
         kb_variant = "",
         kb_model   = "",
-        kb_options = "grp:ctrl_atl_toggle,grp_led:num,ctrl:nocaps",
+        kb_options = "grp:ctrl_alt_toggle,grp_led:num,ctrl:nocaps",
         kb_rules   = "",
         follow_mouse = 1,
         sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
@@ -278,18 +278,22 @@ hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", actio
 hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
 
 -- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + K",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + J",  hl.dsp.focus({ direction = "down" }))
-hl.bind(mainMod .. " + ALT + H",  hl.dsp.window.resize({x=-50, y=0}))
-hl.bind(mainMod .. " + ALT + L", hl.dsp.window.resize({x=50, y=0}))
-hl.bind(mainMod .. " + ALT + K",    hl.dsp.window.resize({x=0, y=-50}))
-hl.bind(mainMod .. " + ALT + J",  hl.dsp.window.resize({x=0, y=50}))
+hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + ALT + H", hl.dsp.window.resize({x=-50, y=0, relative=true}))
+hl.bind(mainMod .. " + ALT + L", hl.dsp.window.resize({x=50, y=0, relative=true}))
+hl.bind(mainMod .. " + ALT + K", hl.dsp.window.resize({x=0, y=-50, relative=true}))
+hl.bind(mainMod .. " + ALT + J",  hl.dsp.window.resize({x=0, y=50, relative=true}))
+hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({direction="l"}))
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({direction="r"}))
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({direction="u"}))
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({direction="d"}))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
