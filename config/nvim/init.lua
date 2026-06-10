@@ -282,7 +282,22 @@ require('mini.misc').setup() -- mostly used for the zoom feature
 -- require('mini.ai').setup() -- better statusline
 require('mini.statusline').setup() -- better statusline
 require('mini.icons').setup() -- required for mini-completion
-require('mini.snippets').setup() -- required for mini-completion
+require('mini.snippets').setup({ -- required for mini-completion
+  expand = {
+    insert = function(snippet)
+      return MiniSnippets.default_insert(snippet, { empty_tabstop = '', empty_tabstop_final = '' })
+    end,
+  },
+})
+vim.api.nvim_create_autocmd('ModeChanged', {
+  pattern = '*:n*',
+  callback = function()
+    if MiniSnippets and MiniSnippets.session.get() then
+      MiniSnippets.session.stop()
+    end
+  end,
+  desc = 'Stop snippet session on Normal mode',
+})
 require('mini.completion').setup() -- auto complete (A-Space / C-n to trigger, C-Space to confirm)
 vim.keymap.set('i', '<C-Space>', '<C-y>', { desc = 'Confirm completion selection' })
 require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
