@@ -5,15 +5,17 @@
 ------------------
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
+local mainMonitor = "DP-1"
+local secMonitor = "DP-2"
 hl.monitor({
-    output   = "DP-1",
+    output   = mainMonitor,
     mode     = "3840x2160@143.99",
     position = "0x1080",
     scale    = "1",
 })
 
 hl.monitor({
-    output   = "DP-2",
+    output   = secMonitor,
     mode     = "1920x1080@119.88",
     position = "0x0",
     scale    = "auto",
@@ -34,25 +36,25 @@ hl.on("hyprland.start", function ()
     -- Autostart necessary processes (like notifications daemons, status bars, etc.)
     -- Or execute your favorite apps at launch like this:
     -- exec-once = nm-applet &
-    hel.exec_cmd("xwaylandvideobridge")
-    hel.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-    hel.exec_cmd("waybar")
+    hl.exec_cmd("xwaylandvideobridge")
+    hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+    hl.exec_cmd("waybar")
 
      -- setup dbus session
-    hel.exec_cmd("wayland-xdg-desktop-setup")
+    hl.exec_cmd("wayland-xdg-desktop-setup")
 
     -- add wallpaper
-    hel.exec_cmd("swaybg -i ~/Documents/wallpaper.jpeg")
+    hl.exec_cmd("swaybg -i ~/Documents/wallpaper.jpeg")
 
      -- main monitor with xwayland
-    hel.exec_cmd("xrandr --output DP-1 --primary")
-    hel.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
+    hl.exec_cmd("xrandr --output DP-1 --primary")
+    hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
 
      -- notifications daemon
-    hel.exec_cmd("swaync")
+    hl.exec_cmd("swaync")
 
     --  idle daemon
-    hel.exec_cmd("hypridle")
+    hl.exec_cmd("hypridle")
 
 end)
 
@@ -300,7 +302,16 @@ hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({direction="d"}))
 for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
     hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i, follow = false}))
+end
+
+-- bind workspace [1-5] to main monitor
+for i = 1, 5 do
+    hl.workspace_rule({ workspace = tostring(i), monitor = mainMonitor, default = true })
+end
+
+for i = 6, 10 do
+    hl.workspace_rule({ workspace = tostring(i), monitor = secMonitor, default = true })
 end
 
 -- Example special workspace (scratchpad)
