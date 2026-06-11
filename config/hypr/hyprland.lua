@@ -248,6 +248,10 @@ hl.config({
             natural_scroll = true,
         },
     },
+
+    group = {
+        auto_group = true, -- auto group window if in a group
+    },
 })
 
 hl.gesture({
@@ -265,6 +269,26 @@ hl.device({
 ---- KEYBINDINGS ----
 ---------------------
 
+local function change_focus(dir)
+    -- all hl.dsp.xxx calls are made to be called within heir purpose is to be
+    -- fed into hl.bind() or hl.dispatch()
+    return function()
+        hl.dispatch(hl.dsp.focus({ direction = tostring(dir) }))
+        -- local active_window = hl.get_active_window()
+        -- -- https://wiki.hypr.land/Configuring/Advanced-and-Cool/Expanding-functionality/
+        -- if active_window and active_window.group ~= nil then
+        --     -- The window is inside a group
+        --     if dir == "l" or dir == "u" then
+        --         hl.dispatch(hl.dsp.group.prev())
+        --     else
+        --         hl.dispatch(hl.dsp.group.next())
+        --     end
+        -- else
+        --     hl.dispatch(hl.dsp.focus({ direction = tostring(dir) }))
+        -- end
+    end
+end
+
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
@@ -278,24 +302,45 @@ hl.bind(mainMod .. " + W", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + E", hl.dsp.layout("togglesplit"))    -- dwindle only
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+hl.bind(mainMod .. " + G", hl.dsp.group.toggle())
+hl.bind(mainMod .. "+ SHIFT + G", function()
+    -- put all window in the current workspace into a group
+    -- local workspace = hl.get_active_workspace()
+    local current_ws = hl.get_active_workspace()
+    if not current_ws then return end
+    local windows = hl.get_workspace_windows(current_ws) or {}
+    if #windows < 2 then return end
+    for i = 2, #windows do
+        -- Move subsequent windows into the group direction of the primary window
+        hl.dispatch(hl.dsp.window.move({ 
+            into_or_create_group = "right", 
+            window = windows[i] 
+        }))
+    end
+end)
+hl.bind(mainMod .. "+ TAB ", hl.dsp.group.next())
 
 -- Move focus with mainMod + arrow keys
+hl.bind(mainMod .. " + left", change_focus("l"))
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
-hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(mainMod .. " + right", change_focus("r"))
+hl.bind(mainMod .. " + up", change_focus("u"))
+hl.bind(mainMod .. " + down", change_focus("d"))
+hl.bind(mainMod .. " + H", change_focus("l"))
+hl.bind(mainMod .. " + L", change_focus("r"))
+hl.bind(mainMod .. " + K", change_focus("u"))
+hl.bind(mainMod .. " + J", change_focus("d"))
 hl.bind(mainMod .. " + ALT + H", hl.dsp.window.resize({x=-50, y=0, relative=true}))
 hl.bind(mainMod .. " + ALT + L", hl.dsp.window.resize({x=50, y=0, relative=true}))
 hl.bind(mainMod .. " + ALT + K", hl.dsp.window.resize({x=0, y=-50, relative=true}))
 hl.bind(mainMod .. " + ALT + J",  hl.dsp.window.resize({x=0, y=50, relative=true}))
-hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({direction="l"}))
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({direction="r"}))
-hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({direction="u"}))
-hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({direction="d"}))
+hl.bind(mainMod .. " + SHIFT + H", function()
+    -- check if we are in a group
+    hl.dsp.window.move({direction="l", group_aware=true})
+end)
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({direction="r", group_aware=true}))
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({direction="u", group_aware=true}))
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({direction="d", group_aware=true}))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
