@@ -337,7 +337,42 @@ require('mini.files').setup({ mappings = { close = '<C-c>' } }) -- file explorer
 --   },
 -- })
 
-vim.keymap.set({'n', 't'}, '<C-w>z', ':vertical resize<CR>:resize<CR>', { desc = 'Zoom window' })
+vim.keymap.set("n",  "<C-w>z", function()
+  if vim.t.zoomed then
+    vim.cmd("tabclose")
+    vim.t.zoomed = false
+  else
+    if vim.fn.tabpagenr("$") == 1 and #vim.api.nvim_tabpage_list_wins(0) == 1 then
+      return -- nothing to zoom
+    end
+    vim.cmd("tab split")
+    vim.t.zoomed = true
+  end
+end, { desc = "Toggle zoom (tmux-style)" })
+
+-- Bind a key to show the blame/commit info for the current line
+vim.keymap.set('n', '<leader>gb', function()
+  require('mini.git').show_at_cursor()
+end, { desc = 'Show git blame at cursor' })
+
+-- aligned git blame
+local align_blame = function(au_data)
+  if au_data.data.git_subcommand ~= 'blame' then return end
+
+  -- Align blame output with source
+  local win_src = au_data.data.win_source
+  vim.wo.wrap = false
+  vim.fn.winrestview({ topline = vim.fn.line('w0', win_src) })
+  vim.api.nvim_win_set_cursor(0, { vim.fn.line('.', win_src), 0 })
+
+  -- Bind both windows so that they scroll together
+  vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
+end
+
+local au_opts = { pattern = 'MiniGitCommandSplit', callback = align_blame }
+vim.api.nvim_create_autocmd('User', au_opts)
+
+vim.api.nvim_create_user_command('Blame', "vertical Git blame -- %", { desc = 'Show git blame for current file' })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
