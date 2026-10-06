@@ -38,7 +38,7 @@ hl.on("hyprland.start", function ()
     -- exec-once = nm-applet &
     hl.exec_cmd("xwaylandvideobridge")
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-    hl.exec_cmd("waybar")
+    hl.exec_cmd("ashell")
 
      -- setup dbus session
     hl.exec_cmd("wayland-xdg-desktop-setup")
@@ -46,15 +46,15 @@ hl.on("hyprland.start", function ()
     -- add wallpaper
     hl.exec_cmd("swaybg -i ~/Documents/wallpaper.jpeg")
 
-     -- main monitor with xwayland
-    hl.exec_cmd("xrandr --output DP-1 --primary")
+    -- main monitor with xwayland
+    -- hl.exec_cmd("xrandr --output DP-1 --primary")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'")
 
      -- notifications daemon
     hl.exec_cmd("swaync")
 
     --  idle daemon
-    hl.exec_cmd("hypridle")
+    -- hl.exec_cmd("hypridle")
 
 end)
 
