@@ -39,11 +39,17 @@ __ps1() {
 PROMPT_COMMAND="__ps1"
 
 # ENV VARIABLE
+if [ -z ${MATDAN_ENV_IS_SETUP} ]; then
+	echo "Setting up PATH, XDG_DATA_HOME"
+	export MATDAN_ENV_IS_SETUP="TRUE"
+	export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin:${HOME}/.cargo/bin"
+fi
 export TERM=xterm-256color
-export VISUAL="vim"
-export EDITOR="vim"
+export VISUAL="nv" # nv is custom neovim wrapper that account if fie is open within a neovim instance
+export EDITOR="nv" # nv is custom neovim wrapper that account if fie is open within a neovim instance
 export TERMINAL="alacritty"
-export PATH="/usr/local/bin:${PATH}:${HOME}/go/bin:${HOME}/.local/bin"
+export CMAKE_EXPORT_COMPILE_COMMANDS=1 # makes sure cmake always exports compile commands for clangd
+export CMAKE_COLOR_DIAGNOSTICS="ON" # enables colored diagnostics in cmake
 
 # ALIASES
 alias gitlen="git ls-files | xargs wc -l"
@@ -51,8 +57,7 @@ alias ls="ls --color -h"
 alias vi="vim"
 alias less="less -R"
 alias grep="grep --color=always -n"
-alias nv="nvim"
-alias ambient="mpv https://www.youtube.com/watch?v=nRe3xFeyhVY&t=2049s"
+alias pass="EDITOR=vim pass" # want to limit AI and plugin access with sensitive data
 
 # USE VIM KEYBINDS
 set -o vi
@@ -69,7 +74,13 @@ then
 fi
 
 # Load Angular CLI autocompletion.
-if command -v ng &> /dev/null
-then
+if command -v ng &> /dev/null; then
 	source <(ng completion script)
 fi
+
+# osc7 for neovim
+cd() {
+	builtin cd "$@" || return
+	# :help terminal-osc7
+	printf '\033]7;file://%s\033\\' "$PWD"
+}

@@ -1,0 +1,20 @@
+[logging]
+target = "stdout"
+level = "warn,ashell=info"
+
+
+[animations]
+enabled = true
+
+[modules]
+left = [ "Workspaces" ]
+center = [ "WindowTitle" ]
+right = [ "MediaPlayer", "SystemInfo", "KeyboardLayout", ["Tempo", "Privacy", "Settings"], "Tray" ]
+
+[media_player]
+max_text_length = 50
+indicator_format = "Text"
+indicator_fields = ["Title"]
+indicator_visualizer = "Background"
+menu_visualizer = true
+visualizer_framerate = 30
