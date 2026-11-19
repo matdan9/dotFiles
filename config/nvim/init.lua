@@ -13,9 +13,6 @@ vim.o.hlsearch = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
 
--- Make line numbers default
-vim.wo.number = true
-
 vim.o.mouse = ''
 vim.o.breakindent = false
 vim.o.undofile = true
@@ -32,7 +29,7 @@ vim.o.termguicolors = true
 
 -- automatically get lazy if not installed
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system {
     'git',
     'clone',
@@ -61,37 +58,6 @@ require('lazy').setup({
     },
   },
 
-  -- AI
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    build = ":Copilot auth",
-    event = "BufReadPost",
-    opts = {
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        hide_during_completion = true,
-        debounce = 15,
-        trigger_on_accept = true,
-        keymap = {
-          accept = "<C-]>",
-          accept_word = false,
-          accept_line = false,
-          next = "<M-]>",
-          prev = "<M-[>",
-          dismiss = false,
-          toggle_auto_trigger = false,
-        },
-      },
-      panel = { enabled = false },
-      filetypes = {
-        markdown = true,
-        help = true,
-      },
-    },
-  },
-
   {
     "sudo-tee/opencode.nvim",
     config = function()
@@ -107,20 +73,14 @@ require('lazy').setup({
           anti_conceal = { enabled = false },
           file_types = { 'opencode_output' },
         },
-        ft = { 'Avante', 'copilot-chat', 'opencode_output' },
+        ft = { 'opencode_output' },
       },
       -- Optional, for file mentions picker, pick only one
       'nvim-telescope/telescope.nvim',
     },
   },
 
-  -- Themes
-  {
-    "neanias/everforest-nvim",
-    version = false,
-    lazy = false,
-    priority = 1000,
-  },
+  -- Theme
   {
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
@@ -153,13 +113,11 @@ require('lazy').setup({
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
-    event = "BufRead",
     branch = "main",
     build = ":TSUpdate",
-    ---@class TSConfig
-    opts = {
-      -- custom handling of parsers
-      ensure_installed = {
+    config = function()
+      local ts = require("nvim-treesitter")
+      local parsers = {
         "regex", "diff", "comment", "markdown", "markdown_inline", "tsx",
         "bash",
         "c", "rust", "cpp", "glsl",
@@ -171,76 +129,39 @@ require('lazy').setup({
         "vim", "vimdoc",
         "sql", "query",
         "python",
-      },
-    },
-    config = function(_, opts)
-      -- install parsers from custom opts.ensure_installed
-      if opts.ensure_installed and #opts.ensure_installed > 0 then
-        require("nvim-treesitter").install(opts.ensure_installed)
-        -- register and start parsers for filetypes
-        for _, parser in ipairs(opts.ensure_installed) do
-          local filetypes = parser -- In this case, parser is the filetype/language name
-          vim.treesitter.language.register(parser, filetypes)
+      }
+      -- installed in the background, already installed parsers are skipped
+      local startup_install = ts.install(parsers)
 
-          vim.api.nvim_create_autocmd({ "FileType" }, {
-            pattern = filetypes,
-            callback = function(event)
-              vim.treesitter.start(event.buf, parser)
-            end,
-          })
-        end
-      end
+      -- install task per parser, so each parser is installed (or fails) once per session. Parsers of
+      -- the startup list wait for it: a second install of the same parser blocks nvim until the first ends
+      local installs = {}
+      for _, lang in ipairs(parsers) do installs[lang] = startup_install end
 
-      -- Auto-install and start parsers for any buffer
-      vim.api.nvim_create_autocmd({ "BufRead" }, {
+      -- start treesitter for every buffer with a parser, installing missing parsers in the background
+      vim.api.nvim_create_autocmd("FileType", {
         callback = function(event)
-          local bufnr = event.buf
-          local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
-
-          -- Skip if no filetype
-          if filetype == "" then
-            return
-          end
-
-          -- Check if this filetype is already handled by explicit opts.ensure_installed config
-          for _, filetypes in pairs(opts.ensure_installed) do
-            local ft_table = type(filetypes) == "table" and filetypes or { filetypes }
-            if vim.tbl_contains(ft_table, filetype) then
-              return -- Already handled above
-            end
-          end
-
-          -- Get parser name based on filetype
-          local parser_name = vim.treesitter.language.get_lang(filetype) -- might return filetype (not helpful)
-          if not parser_name then
-            return
-          end
-          -- Try to get existing parser (helpful check if filetype was returned above)
-          local parser_configs = require("nvim-treesitter.parsers")
-          if not parser_configs[parser_name] then
-            return -- Parser not available, skip silently
-          end
-
-          local parser_installed = pcall(vim.treesitter.get_parser, bufnr, parser_name)
-
-          if not parser_installed then
-            -- If not installed, install parser synchronously
-            require("nvim-treesitter").install({ parser_name }):wait(30000)
-          end
-
-          -- let's check again
-          parser_installed = pcall(vim.treesitter.get_parser, bufnr, parser_name)
-
-          if parser_installed then
-            -- Start treesitter for this buffer
-            vim.treesitter.start(bufnr, parser_name)
-          end
+          local lang = vim.treesitter.language.get_lang(event.match)
+          if not lang or pcall(vim.treesitter.start, event.buf, lang) then return end
+          if not require("nvim-treesitter.parsers")[lang] then return end -- no parser for this filetype
+          installs[lang] = installs[lang] or ts.install(lang)
+          installs[lang]:await(function()
+            vim.schedule(function()
+              if vim.api.nvim_buf_is_valid(event.buf) then pcall(vim.treesitter.start, event.buf, lang) end
+            end)
+          end)
         end,
       })
     end,
   },
 
-  { 'mrjones2014/smart-splits.nvim' }, -- smarter splits (tmux integration)
+  { -- smarter splits (tmux integration). Don't lazy load: tmux only learns a pane runs nvim when it loads
+    'mrjones2014/smart-splits.nvim',
+    dependencies = {
+      -- sets @pane-is-vim for the bindings in tmux.conf (refuses to leave a zoomed pane by default)
+      { 'smart-splits-nvim/backend-tmux', main = 'smart-splits-backend-tmux' },
+    },
+  },
 
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
@@ -254,31 +175,93 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      -- inline blame at the end of the cursor line, toggled with :Gblame
+      current_line_blame_opts = { virt_text_pos = 'eol', delay = 300 },
+      current_line_blame_formatter = '<author>, <author_time:%R> • <summary>',
       on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
-        -- don't override the built-in and fugitive keymaps
         local gs = package.loaded.gitsigns
-        vim.keymap.set({ 'n', 'v' }, ']h', function() gs.next_hunk() end, { expr = true, buffer = bufnr, desc = 'Jump to next hunk' })
-        vim.keymap.set({ 'n', 'v' }, '[h', function() gs.prev_hunk() end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
+        local map = function(mode, keys, func, desc)
+          vim.keymap.set(mode, keys, func, { buffer = bufnr, desc = desc })
+        end
+        -- hunk actions, vs the index (unstaged changes)
+        map('n', '<leader>hs', gs.stage_hunk, '[H]unk [S]tage/unstage')
+        map('v', '<leader>hs', function() gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end, '[H]unk [S]tage selection')
+        map('n', '<leader>hr', gs.reset_hunk, '[H]unk [R]eset')
+        map('v', '<leader>hr', function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end, '[H]unk [R]eset selection')
+        map('n', '<leader>hS', gs.stage_buffer, '[H]unk [S]tage buffer')
+        map('n', '<leader>hR', gs.reset_buffer, '[H]unk [R]eset buffer')
+        map('n', '<leader>hp', gs.preview_hunk, '[H]unk [P]review')
+        map('n', '<leader>hi', gs.preview_hunk_inline, '[H]unk preview [I]nline')
       end,
     },
   },
 
+  -- git commands: :Git status, :Gvdiffsplit, :Git blame
+  'tpope/vim-fugitive',
+
+  -- EXTRA WORK PLUGINS
+  {
+    "coder/claudecode.nvim",
+    dependencies = { "folke/snacks.nvim" },
+    opts = {
+      terminal_cmd = "~/.local/bin/claude", -- Point to local installation
+    },
+    config = true,
+    -- `cmd` lets lazy.nvim create command stubs that load the plugin on first use,
+    -- so `:ClaudeCode` and friends work on a fresh start. Without it, a keys-only
+    -- spec defers loading until a <leader>a* mapping is pressed and the commands
+    -- would not exist yet.
+    cmd = {
+      "ClaudeCode",
+      "ClaudeCodeFocus",
+      "ClaudeCodeSelectModel",
+      "ClaudeCodeAdd",
+      "ClaudeCodeSend",
+      "ClaudeCodeTreeAdd",
+      "ClaudeCodeStatus",
+      "ClaudeCodeStart",
+      "ClaudeCodeStop",
+      "ClaudeCodeOpen",
+      "ClaudeCodeClose",
+      "ClaudeCodeDiffAccept",
+      "ClaudeCodeDiffDeny",
+      "ClaudeCodeCloseAllDiffs",
+    },
+    keys = {
+      { "<leader>a", nil, desc = "AI/Claude Code" },
+      { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+      { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+      { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+      { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+      { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+      { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+      { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<leader>as",
+        "<cmd>ClaudeCodeTreeAdd<cr>",
+        desc = "Add file",
+        ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw", "snacks_picker_list" },
+      },
+      -- Diff management
+      { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+      { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+    },
+  }
 }, {})
 
 -- MINI module activations
 require('mini.bracketed').setup({ -- combine '[' or ']' for motion
-  -- Disable <Space> suffix to avoid mini.clue intercepting <leader><Space>
-  -- (mini.bracketed maps [<Space>/]<Space> for blank line jumps by default)
+  -- no [<Space>/]<Space> blank line jumps
   blankline = { suffix = '' },
-}) 
+  -- keep the native ]c/[c (next/prev change) in diff windows
+  comment = { suffix = '' },
+})
 require('mini.jump2d').setup({
   mappings = {
     start_jumping = 's',
   },
 })
 
-require('mini.misc').setup() -- mostly used for the zoom feature
 -- require('mini.ai').setup() -- better statusline
 require('mini.statusline').setup() -- better statusline
 require('mini.icons').setup() -- required for mini-completion
@@ -300,42 +283,7 @@ vim.api.nvim_create_autocmd('ModeChanged', {
 })
 require('mini.completion').setup() -- auto complete (A-Space / C-n to trigger, C-Space to confirm)
 vim.keymap.set('i', '<C-Space>', '<C-y>', { desc = 'Confirm completion selection' })
-require('mini.git').setup() -- git commands and signs in gutter (:h :Git :h MiniGit-examples :h MiniGit.enable() :h MiniGit.get_buf_data())
 require('mini.files').setup({ mappings = { close = '<C-c>' } }) -- file explorer (':h MiniFile' '<leader>e' to open '=' to sync buff with FS)
--- miniclue = require('mini.clue') -- Shows keybinds. Window will pop after 1 sec of a keybind started but no ended eg: <leader>, <">. <C-d> <C-u> to scroll in clue
--- miniclue.setup({ -- show possible keybinds after pressing a trigger key
---   triggers = {
---     -- Leader triggers
---     { mode = { 'n', 'x' }, keys = '<Leader>' },
---     -- `[` and `]` keys
---     { mode = 'n', keys = '[' },
---     { mode = 'n', keys = ']' },
---     -- Built-in completion
---     { mode = 'i', keys = '<C-x>' },
---     -- `g` key
---     { mode = { 'n', 'x' }, keys = 'g' },
---     -- Marks
---     { mode = { 'n', 'x' }, keys = "'" },
---     { mode = { 'n', 'x' }, keys = '`' },
---     -- Registers
---     { mode = { 'n', 'x' }, keys = '"' },
---     { mode = { 'i', 'c' }, keys = '<C-r>' },
---     -- Window commands
---     { mode = 'n', keys = '<C-w>' },
---     -- `z` key
---     { mode = { 'n', 'x' }, keys = 'z' },
---   },
---   clues = {
---     -- Enhance this by adding descriptions for <Leader> mapping groups
---     miniclue.gen_clues.square_brackets(),
---     miniclue.gen_clues.builtin_completion(),
---     miniclue.gen_clues.g(),
---     miniclue.gen_clues.marks(),
---     miniclue.gen_clues.registers(),
---     miniclue.gen_clues.windows(),
---     miniclue.gen_clues.z(),
---   },
--- })
 
 vim.keymap.set("n",  "<C-w>z", function()
   if vim.t.zoomed then
@@ -350,30 +298,6 @@ vim.keymap.set("n",  "<C-w>z", function()
   end
 end, { desc = "Toggle zoom (tmux-style)" })
 
--- Bind a key to show the blame/commit info for the current line
-vim.keymap.set('n', '<leader>gb', function()
-  require('mini.git').show_at_cursor()
-end, { desc = 'Show git blame at cursor' })
-
--- aligned git blame
-local align_blame = function(au_data)
-  if au_data.data.git_subcommand ~= 'blame' then return end
-
-  -- Align blame output with source
-  local win_src = au_data.data.win_source
-  vim.wo.wrap = false
-  vim.fn.winrestview({ topline = vim.fn.line('w0', win_src) })
-  vim.api.nvim_win_set_cursor(0, { vim.fn.line('.', win_src), 0 })
-
-  -- Bind both windows so that they scroll together
-  vim.wo[win_src].scrollbind, vim.wo.scrollbind = true, true
-end
-
-local au_opts = { pattern = 'MiniGitCommandSplit', callback = align_blame }
-vim.api.nvim_create_autocmd('User', au_opts)
-
-vim.api.nvim_create_user_command('Blame', "vertical Git blame -- %", { desc = 'Show git blame for current file' })
-
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
@@ -382,14 +306,11 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+-- Diagnostics: messages at the end of the line. ]d/[d jump (nvim defaults), <C-w>d shows the full
+-- message, ge toggles the list, <leader>sd searches them
+vim.diagnostic.config({ virtual_text = true })
 
--- Themes config
-require("everforest").load()
+-- Theme config
 require("gruvbox").setup({
   terminal_colors = true, -- add neovim terminal colors
   undercurl = true,
@@ -418,11 +339,6 @@ require("gruvbox").setup({
 
 -- Telescope config
 require('telescope').setup {
-  picker = {
-    layout_config = {
-        width = 0.6
-    },
-  },
   defaults = {
     initial_mode = "insert",
     layout_strategy = "vertical",
@@ -430,8 +346,6 @@ require('telescope').setup {
       width = 0.95,
       height = 0.95,
     },
-    preview_cutoff = 60,
-    preview_width = 0.4,
     -- NOTE: custom path display to show full path in addition to filename
     -- path_display = function(opts, path)
     --   local tail = require("telescope.utils").path_tail(path)
@@ -536,14 +450,157 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').keymaps, { desc = 'Keymaps' })
 vim.keymap.set('n', '<leader>fq', require('telescope.builtin').quickfix, { desc = '[F]ind [Q]uickfix' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>fQ', require('telescope.builtin').quickfixhistory, { desc = '[F]ind [Q]uickfix history' })
+
+-- GIT CONFIG
+-- Review loop: <leader>gs lists the changed files, <C-q> sends them to quickfix, ]q/[q goes from file
+-- to file, ]h/[h from hunk to hunk and <leader>gd shows the whole file side by side with its diff.
+-- Gutter signs, hunks and diffs are against the index, i.e. unstaged changes
+
+-- show whole files in diffs instead of folding the unchanged lines away (<leader>gz toggles the folding)
+vim.opt.diffopt:append('context:99999')
+
+-- Side-by-side diff that follows its window: <leader>gd turns it on for the current window, then every
+-- file shown there (]q/[q, :e, pickers...) is diffed in place, without adding splits, until it's turned off
+local diff_follow = { busy = false, pending = false }
+
+-- close the "before" window of the diff, or for a diff opened some other way, its git object windows
+local function diff_close_side()
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  local sides = vim.tbl_filter(function(win) return vim.w[win].git_diff_side end, wins)
+  if #sides == 0 then
+    sides = vim.tbl_filter(function(win)
+      return vim.wo[win].diff and vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win)):match('^fugitive://')
+    end, wins)
+  end
+  for _, win in ipairs(sides) do pcall(vim.api.nvim_win_close, win, true) end
+  vim.cmd('diffoff!')
+end
+
+-- open the "before" side of the current buffer's diff, keeping the cursor where it is
+local function diff_open_side()
+  local main = vim.api.nvim_get_current_win()
+  if vim.bo.buftype ~= '' then return end -- terminal, help, quickfix...
+  local before = vim.api.nvim_tabpage_list_wins(0)
+  local ok, err = pcall(vim.cmd, 'Gvdiffsplit')
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if not vim.tbl_contains(before, win) then vim.w[win].git_diff_side = true end
+  end
+  if vim.api.nvim_win_is_valid(main) then vim.api.nvim_set_current_win(main) end
+  if not ok then vim.notify('No git diff for this file: ' .. err, vim.log.levels.WARN) end
+end
+
+-- re-diff after a file was shown in the followed window, or in its "before" window (then move it over)
+local function diff_follow_update(win)
+  local main = vim.t.git_diff_main
+  if not (main and vim.api.nvim_win_is_valid(main)) then
+    vim.t.git_diff_main = nil
+    return
+  end
+  diff_follow.busy = true
+  pcall(function()
+    if win ~= main and vim.api.nvim_win_is_valid(win) then
+      local cursor = vim.api.nvim_win_get_cursor(win)
+      vim.api.nvim_win_set_buf(main, vim.api.nvim_win_get_buf(win))
+      vim.api.nvim_win_set_cursor(main, cursor)
+    end
+    vim.api.nvim_set_current_win(main)
+    diff_close_side()
+    diff_open_side()
+  end)
+  diff_follow.busy = false
+end
+
+local function toggle_diff_follow()
+  if vim.t.git_diff_main or vim.wo.diff then
+    vim.t.git_diff_main = nil
+    diff_close_side()
+    return
+  end
+  vim.t.git_diff_main = vim.api.nvim_get_current_win()
+  diff_follow.busy = true
+  pcall(diff_open_side)
+  diff_follow.busy = false
+end
+
+local diff_follow_group = vim.api.nvim_create_augroup('git-diff-follow', { clear = true })
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  group = diff_follow_group,
+  callback = function()
+    local win = vim.api.nvim_get_current_win()
+    if diff_follow.busy or diff_follow.pending or not vim.t.git_diff_main then return end
+    if win ~= vim.t.git_diff_main and not vim.w[win].git_diff_side then return end
+    diff_follow.pending = true
+    vim.schedule(function()
+      diff_follow.pending = false
+      diff_follow_update(win)
+    end)
+  end,
+})
+vim.api.nvim_create_autocmd('WinClosed', {
+  group = diff_follow_group,
+  callback = function(ev)
+    if tonumber(ev.match) == vim.t.git_diff_main then
+      vim.t.git_diff_main = nil
+      vim.schedule(diff_close_side)
+    end
+  end,
+})
+
+-- next/prev change: native diff jump inside diff windows, gitsigns hunk otherwise
+vim.keymap.set({ 'n', 'x' }, ']h', function()
+  if vim.wo.diff then vim.cmd.normal({ ']c', bang = true }) else require('gitsigns').nav_hunk('next') end
+end, { desc = 'Jump to next change' })
+vim.keymap.set({ 'n', 'x' }, '[h', function()
+  if vim.wo.diff then vim.cmd.normal({ '[c', bang = true }) else require('gitsigns').nav_hunk('prev') end
+end, { desc = 'Jump to previous change' })
+
+vim.keymap.set('n', '<leader>gg', '<cmd>Git<cr>', { desc = '[G]it status (fugitive)' })
+-- <C-q> sends the files to quickfix, <Tab> stages/unstages a file
+vim.keymap.set('n', '<leader>gs', require('telescope.builtin').git_status, { desc = '[G]it [S]tatus changed files' })
+vim.keymap.set('n', '<leader>gd', toggle_diff_follow, { desc = '[G]it [D]iff that follows the window (toggle)' })
+vim.keymap.set('n', '<leader>gz', function()
+  if vim.o.diffopt:find('context:99999', 1, true) then
+    vim.opt.diffopt:remove('context:99999')
+  else
+    vim.opt.diffopt:append('context:99999')
+  end
+end, { desc = '[G]it diff fold unchanged lines (toggle)' })
+vim.keymap.set('n', '<leader>gf', function()
+  local actions = require('telescope.actions')
+  local action_state = require('telescope.actions.state')
+  require('telescope.builtin').git_bcommits({
+    attach_mappings = function(prompt_bufnr)
+      actions.select_default:replace(function()
+        local sha = action_state.get_selected_entry().value
+        actions.close(prompt_bufnr)
+        vim.cmd('Gvdiffsplit ' .. sha)
+      end)
+      return true
+    end,
+  })
+end, { desc = '[G]it [F]ile history' })
+vim.keymap.set('n', '<leader>gb', function() require('gitsigns').blame_line({ full = true }) end, { desc = '[G]it [B]lame line' })
+vim.keymap.set('n', '<leader>gA', '<cmd>Git blame<cr>', { desc = '[G]it [A]nnotate file (blame)' })
+
+vim.api.nvim_create_user_command('Blame', 'Git blame', { desc = 'Show git blame for current file' })
+vim.api.nvim_create_user_command('Diff', toggle_diff_follow, { desc = 'Toggle side-by-side diff that follows the window' })
+vim.api.nvim_create_user_command('Gblame', function()
+  local enabled = require('gitsigns').toggle_current_line_blame()
+  vim.notify('Inline blame ' .. (enabled and 'on' or 'off'))
+end, { desc = 'Toggle blame at the end of the cursor line' })
 
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require('mason').setup()
-require('mason-lspconfig').setup()
+require('mason-lspconfig').setup({ automatic_enable = true }) -- enable every server installed with mason
 
--- Ensure the servers above are installed
-require("mason-lspconfig").setup { automatic_enable = true, }
+-- remove nvim's default gr* LSP maps (grn, gra, grr, gri, grt, grx), otherwise `gr` waits for
+-- timeoutlen before running. The LspAttach maps below cover the same actions
+for _, keys in ipairs({ 'grn', 'gra', 'grr', 'gri', 'grt', 'grx' }) do
+  pcall(vim.keymap.del, 'n', keys)
+end
+pcall(vim.keymap.del, 'x', 'gra')
 
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
@@ -591,12 +648,12 @@ vim.keymap.set("n", "ge", function()
   local window = vim.api.nvim_get_current_win()
   vim.cmd.lwindow() -- open+focus loclist if has entries, else close -- this is the magic toggle command
   vim.api.nvim_set_current_win(window) -- restore focus to window you were editing (delete this if you want to stay in loclist)
-end, { buffer = bufnr })
+end, { desc = 'Toggle diagnostics list' })
 
--- tabs
+-- tabs (tmux-style: <C-w>c is a new tab, <C-w>q closes a window)
 vim.keymap.set('n', '<C-w>c', function()
   vim.cmd.tabnew()
-end)
+end, { desc = 'New tab (tmux-style)' })
 
 -- Terminal config
 vim.keymap.set('t', '<C-w>[', '<C-\\><C-N>') -- exit terminal mode with Ctrl-w [ (reminiscent of tmux)
@@ -620,45 +677,24 @@ vim.keymap.set('n', '<leader>vt', function() -- open terminal in new vertical wi
   vim.api.nvim_feedkeys('i', 'n', false) -- enter insert mode in terminal
 end)
 
--- remove line numbers from terminal buffers
-vim.api.nvim_create_autocmd('BufEnter', {
+-- nvim already removes line numbers from terminals, also turn off spell checking there
+vim.api.nvim_create_autocmd('TermOpen', {
   group = vim.api.nvim_create_augroup("term-start", { clear = true }),
   callback = function()
-    if vim.bo.filetype ~= 'terminal' then
-      return
-    end
-    vim.opt.number = false
-    vim.opt.relativenumber = false
+    vim.opt_local.spell = false
   end
 })
 
--- make nvim follow cwd of terminal
+-- make nvim follow cwd of terminal (the shell's cwd, so it works after cd, z, pushd...)
 vim.api.nvim_create_autocmd({'BufEnter', 'TermEnter', 'TermLeave'}, {
   desc = "cd to cwd on enter",
   pattern = "term://*",
-  callback = function(args)
+  callback = function()
+    if not vim.b.terminal_job_pid then return end
     local cwd = vim.fn.resolve('/proc/' .. vim.b.terminal_job_pid .. '/cwd')
     if vim.fn.isdirectory(cwd) == 0 then return end
     vim.fn.chdir(cwd)
   end,
-})
--- :help terminal-ocs7 handle OSC 7 dir change requests from terminal (e.g. when using zoxide or autojump)
-vim.api.nvim_create_autocmd({ 'TermRequest' }, {
-  desc = 'Handles OSC 7 dir change requests',
-  callback = function(ev)
-    local val, n = string.gsub(ev.data.sequence, '\027]7;file://[^/]*', '')
-    if n < 1 then return end
-    -- OSC 7: dir-change
-    local dir = val
-    if vim.fn.isdirectory(dir) == 0 then
-      vim.notify('invalid dir: '..dir)
-      return
-    end
-    vim.b[ev.buf].osc7_dir = dir
-    if vim.api.nvim_get_current_buf() == ev.buf then
-      vim.cmd.lcd(dir)
-    end
-  end
 })
 
 -- smart-split config
@@ -669,27 +705,27 @@ require('smart-splits').setup({
     'quickfix',
     'prompt',
   },
-  ignored_filetypes = { }, -- Ignored filetypes (only while resizing)
-  -- the default number of lines/columns to resize by at a time
-  default_amount = 3,
-  at_edge = 'wrap',
-  float_win_behavior = 'previous',
-  move_cursor_same_row = false,
-  cursor_follows_swapped_bufs = false,
-  ignored_events = { -- ignores some autocmd
-    -- 'BufEnter',
-    'WinEnter',
+  ignored_filetypes = { }, -- Ignored filetypes
+  resize = {
+    amount = 3, -- the default number of lines/columns to resize by at a time
+    ignored_events = { -- ignores some autocmd while resizing
+      -- 'BufEnter',
+      'WinEnter',
+    },
   },
-  -- enable or disable a multiplexer integration;
-  -- automatically determined, unless explicitly disabled or set,
-  -- by checking the $TERM_PROGRAM environment variable,
-  -- and the $KITTY_LISTEN_ON environment variable for Kitty.
-  -- You can also set this value by setting `vim.g.smart_splits_multiplexer_integration`
-  -- before the plugin is loaded (e.g. for lazy environments).
-  multiplexer_integration = nil,
-  disable_multiplexer_nav_when_zoomed = true,
-  -- default logging level, one of: 'trace'|'debug'|'info'|'warn'|'error'|'fatal'
-  log_level = 'info',
+  move = {
+    at_edge = 'wrap', -- keep in step with the tmux.conf bindings, which wrap too
+    same_row = false,
+    float = 'previous',
+  },
+  swap = { move_cursor = false },
+  mux = {
+    -- no auto-detection anymore, the backend plugin has to be named
+    backend = 'smart-splits-backend-tmux',
+    warn_if_unusable = false, -- don't warn when nvim runs outside tmux
+  },
+  -- logging level, one of: 'trace'|'debug'|'info'|'warn'|'error'
+  log = { level = 'info' },
 })
 
 vim.keymap.set({'n', 't'}, '<A-h>', require('smart-splits').resize_left)
@@ -701,7 +737,8 @@ vim.keymap.set({'n', 't'}, '<C-h>', require('smart-splits').move_cursor_left)
 vim.keymap.set({'n', 't'}, '<C-j>', require('smart-splits').move_cursor_down)
 vim.keymap.set({'n', 't'}, '<C-k>', require('smart-splits').move_cursor_up)
 vim.keymap.set({'n', 't'}, '<C-l>', require('smart-splits').move_cursor_right)
-vim.keymap.set({'n', 't'}, '<C-\\>', require('smart-splits').move_cursor_previous)
+-- smart-splits dropped move_cursor_previous, go to the previous nvim window instead
+vim.keymap.set({'n', 't'}, '<C-\\>', function() vim.cmd.wincmd('p') end)
 -- swapping buffers between windows
 vim.keymap.set({'n'}, '<leader><leader>h', require('smart-splits').swap_buf_left)
 vim.keymap.set({'n'}, '<leader><leader>j', require('smart-splits').swap_buf_down)
@@ -756,19 +793,36 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 -- set the color scheme
+vim.o.background = "dark"
 vim.cmd.colorscheme("gruvbox")
 
-vim.o.background = "dark"
-vim.cmd([[set background=dark]])
-vim.cmd([[set ts=4 sw=4]])
-vim.cmd([[map gn :bnext<cr>]])
-vim.cmd([[map gp :bprevious<cr>]])
-vim.cmd([[setlocal spell spelllang=en_us]])
--- vim.cmd([[setlocal spell spelllang=en_us,fr]])
--- vim.cmd([[inoremap <C-E> <C-N>]])
+-- spell checking everywhere (in code, treesitter limits it to comments and strings)
+vim.o.spell = true
+vim.o.spelllang = 'en_us' -- 'en_us,fr'
 
--- custom commands
+-- force tab settings for makefiles
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "make",
+  callback = function()
+    vim.opt_local.expandtab = false
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
+  end,
+})
 vim.api.nvim_create_user_command('Cleanup', '%s/\\s\\+$//e', { nargs = 0 }) -- :Cleanup trim the trailing white spaces
-vim.api.nvim_create_user_command('Table', ":!column -t -s '|' -o '|'<CR>", { nargs = 0 }) -- :Table to format markdown tables
-vim.api.nvim_create_user_command('Diff', 'lua MiniDiff.toggle_overlay()<CR>', { nargs = 0 }) -- :Diff to toggle git diff view
+vim.api.nvim_create_user_command('Table', "<line1>,<line2>!column -t -s '|' -o '|'", { range = true }) -- :'<,'>Table to format markdown tables
+
+-- some extra neovide controls
+if vim.g.neovide then
+  vim.g.neovide_scale_factor = 1.0
+  local change_scale_factor = function(delta)
+    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+  end
+  vim.keymap.set("n", "<C-=>", function()
+    change_scale_factor(1.10)
+  end, { desc = 'Neovide zoom in' })
+  vim.keymap.set("n", "<C-->", function()
+    change_scale_factor(1/1.10)
+  end, { desc = 'Neovide zoom out' })
+end
 
